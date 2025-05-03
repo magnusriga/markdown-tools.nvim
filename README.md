@@ -3,7 +3,7 @@
 <!-- Badges (replace with actual badges) -->
 
 [![Lua](https://img.shields.io/badge/Lua-blue.svg?style=flat-square&logo=lua)](https://www.lua.org)
-[![License](https://img.shields.io/github/license/magnusriga/markdown-shortcuts.nvim?style=flat-square)](LICENSE)
+[![License](https://img.shields.io/github/license/magnusriga/markdown-tools.nvim?style=flat-square)](LICENSE)
 
 > Enhancing your Markdown editing experience in Neovim with intuitive shortcuts and commands.
 
@@ -22,7 +22,7 @@
 ## ⚡️ Requirements
 
 - Neovim >= 0.8.0
-- Optional: A picker plugin (`fzf`/`fzf.vim`, `telescope.nvim`, or `mini.pick`) for the template creation feature.
+- Optional: A picker plugin (`fzf-lua`, `telescope.nvim`, or `mini.pick`) for the template creation feature.
 - Optional: An external Markdown preview tool (like `glow`, `pandoc`, etc.) if using the `MarkdownPreview` command.
 
 ## 📦 Installation
@@ -35,16 +35,14 @@ Use your favorite plugin manager.
 {
   'magnusriga/markdown-tools.nvim',
   -- Optional dependencies for picker:
+  -- dependencies = { 'folke/snacks.nvim' },
+  -- dependencies = { 'ibhagwan/fzf-lua' },
   -- dependencies = { 'nvim-telescope/telescope.nvim' },
-  -- dependencies = { 'junegunn/fzf', 'junegunn/fzf.vim' },
-  -- dependencies = { 'echasnovski/mini.nvim' }, -- If using mini.pick
-  event = "FileType markdown", -- Load when a markdown file is opened
-  config = function()
-    require('markdown-shortcuts').setup({
+  opts = {
       -- Your custom configuration here
       -- Example: Use Telescope for template picking
       -- picker = 'telescope',
-    })
+    }
   end,
 }
 ```
@@ -53,14 +51,14 @@ Use your favorite plugin manager.
 
 ```lua
 use {
-  'magnusriga/markdown-shortcuts.nvim',
+  'magnusriga/markdown-tools.nvim',
   -- Optional dependencies:
+  -- requires = { 'folke/snacks.nvim' },
+  -- requires = { 'ibhagwan/fzf-lua' },
   -- requires = { 'nvim-telescope/telescope.nvim' },
-  -- requires = { 'junegunn/fzf', run = ':call fzf#install()' },
-  -- requires = { 'echasnovski/mini.nvim' },
   ft = { "markdown" },
   config = function()
-    require('markdown-shortcuts').setup({
+    require('markdown-tools').setup({
       -- Configuration goes here
     })
   end,
@@ -73,7 +71,7 @@ Call the `setup` function to configure the plugin. Here are the default settings
 
 ```lua
 -- Default configuration
-require('markdown-shortcuts').setup({
+require('markdown-tools').setup({
   -- Directory containing your Markdown templates
   template_dir = vim.fn.expand("~/.config/nvim/templates"),
 
