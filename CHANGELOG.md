@@ -26,5 +26,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial release of `markdown-shortcuts.nvim`.
 - Features include: inserting headers, code blocks, bold/italic text, links, tables, checkboxes; toggling checkboxes; creating files from templates; list continuation; configurable keymaps and commands; optional buffer settings.
 
-[Unreleased]: https://github.com/your-username/markdown-shortcuts.nvim/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/your-username/markdown-shortcuts.nvim/releases/tag/v0.1.0
+[Unreleased]: https://github.com/magnusriga/markdown-shortcuts.nvim/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/magnusriga/markdown-shortcuts.nvim/releases/tag/v0.1.0

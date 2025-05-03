@@ -3,7 +3,7 @@
 <!-- Badges (replace with actual badges) -->
 
 [![Lua](https://img.shields.io/badge/Lua-blue.svg?style=flat-square&logo=lua)](https://www.lua.org)
-[![License](https://img.shields.io/github/license/your-username/markdown-shortcuts.nvim?style=flat-square)](LICENSE)
+[![License](https://img.shields.io/github/license/magnusriga/markdown-shortcuts.nvim?style=flat-square)](LICENSE)
 
 > Enhancing your Markdown editing experience in Neovim with intuitive shortcuts and commands.
 
@@ -33,7 +33,7 @@ Use your favorite plugin manager.
 
 ```lua
 {
-  'your-username/markdown-shortcuts.nvim',
+  'magnusriga/markdown-shortcuts.nvim',
   -- Optional dependencies for picker:
   -- dependencies = { 'nvim-telescope/telescope.nvim' },
   -- dependencies = { 'junegunn/fzf', 'junegunn/fzf.vim' },
@@ -53,7 +53,7 @@ Use your favorite plugin manager.
 
 ```lua
 use {
-  'your-username/markdown-shortcuts.nvim',
+  'magnusriga/markdown-shortcuts.nvim',
   -- Optional dependencies:
   -- requires = { 'nvim-telescope/telescope.nvim' },
   -- requires = { 'junegunn/fzf', run = ':call fzf#install()' },
