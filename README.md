@@ -33,7 +33,7 @@ Use your favorite plugin manager.
 
 ```lua
 {
-  'magnusriga/markdown-shortcuts.nvim',
+  'magnusriga/markdown-tools.nvim',
   -- Optional dependencies for picker:
   -- dependencies = { 'nvim-telescope/telescope.nvim' },
   -- dependencies = { 'junegunn/fzf', 'junegunn/fzf.vim' },
