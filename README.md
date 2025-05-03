@@ -42,8 +42,7 @@ Use your favorite plugin manager.
       -- Your custom configuration here
       -- Example: Use Telescope for template picking
       -- picker = 'telescope',
-    }
-  end,
+  },
 }
 ```
 
