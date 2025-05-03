@@ -7,7 +7,7 @@
 
 > Enhancing your Markdown editing experience in Neovim with intuitive shortcuts and commands.
 
-`markdown-shortcuts.nvim` provides a set of commands and configurable keymaps to streamline common Markdown editing tasks, from inserting elements like headers and code blocks to managing checkbox lists and creating files from templates.
+`markdown-tools.nvim` provides a set of commands and configurable keymaps to streamline common Markdown editing tasks, from inserting elements like headers and code blocks to managing checkbox lists and creating files from templates.
 
 ## ✨ Features
 
