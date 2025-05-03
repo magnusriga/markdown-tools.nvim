@@ -22,7 +22,7 @@
 ## ⚡️ Requirements
 
 - Neovim >= 0.8.0
-- Optional: A picker plugin (`fzf-lua`, `telescope.nvim`, or `mini.pick`) for the template creation feature.
+- Optional: A picker plugin (`snacks.nvim`, `fzf-lua`, or `telescope.nvim`) for the template creation feature.
 - Optional: An external Markdown preview tool (like `glow`, `pandoc`, etc.) if using the `MarkdownPreview` command.
 
 ## 📦 Installation
