@@ -131,7 +131,7 @@ require('markdown-tools').setup({
 
 ### Commands
 
-The following commands are available (if enabled in `config.commands`):
+The following commands are available, most work in both visual and normal mode:
 
 - `:MarkdownNewTemplate`: Select a template from `template_dir` using the configured picker and create a new file.
 - `:MarkdownHeader`: Insert a header. Prompts for level (1-6) or uses `[count]` (e.g., `:3MarkdownHeader`). In Visual mode, wraps selection.
