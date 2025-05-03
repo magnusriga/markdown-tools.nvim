@@ -23,7 +23,6 @@
 
 - Neovim >= 0.8.0
 - Optional: A picker plugin (`snacks.nvim`, `fzf-lua`, or `telescope.nvim`) for the template creation feature.
-- Optional: An external Markdown preview tool (like `glow`, `pandoc`, etc.) if using the `MarkdownPreview` command.
 
 ## 📦 Installation
 
@@ -84,8 +83,7 @@ require('markdown-tools').setup({
   -- Keymappings for shortcuts. Set to `false` or `""` to disable.
   keymaps = {
     create_from_template = "<leader>mnt", -- New Template
-    insert_header = "<leader>mh",        -- Header (use count for level)
-    insert_list_item = "",              -- (No default, handled by list continuation)
+    insert_header = "<leader>mh",        -- Header
     insert_code_block = "<leader>mc",    -- Code block
     insert_bold = "<leader>mb",        -- Bold
     insert_italic = "<leader>mi",      -- Italic
@@ -111,7 +109,6 @@ require('markdown-tools').setup({
   },
 
   -- Command or Lua function to execute for Markdown preview.
-  -- Example: 'glow %' (requires glow) or `function() ... end`
   preview_command = nil,
 
   -- Apply local buffer settings for Markdown files
@@ -145,7 +142,7 @@ The following commands are available (if enabled in `config.commands`):
 - `:MarkdownInsertTable`: Insert a table. Prompts for rows and columns.
 - `:MarkdownCheckbox`: Insert a checkbox list item (`- [ ]`). In Visual mode, uses selection as text.
 - `:MarkdownToggleCheckbox`: Toggles the checkbox state (`[ ]` <=> `[x]`) on the current line.
-- `:MarkdownPreview`: Executes the configured `preview_command`.
+- `:MarkdownPreview`: Preview markdown.
 
 ### Keymaps
 
