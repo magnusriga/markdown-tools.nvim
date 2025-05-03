@@ -145,10 +145,23 @@ function M.insert_bold(opts)
 	if opts.range == 2 then
 		local start_pos = vim.fn.getpos("'<")
 		local end_pos = vim.fn.getpos("'>")
-		local text = get_visual_selection()
+
+		-- Check for invalid positions (e.g., first use before selection)
+		if start_pos[2] == 0 or end_pos[2] == 0 then
+			vim.notify("MarkdownTools: No visual selection marks found. Select text first.", vim.log.levels.WARN)
+			return -- Exit if marks are invalid
+		end
+
+		-- Ensure start_pos is always before end_pos
+		if start_pos[2] > end_pos[2] or (start_pos[2] == end_pos[2] and start_pos[3] > end_pos[3]) then
+			start_pos, end_pos = end_pos, start_pos -- Swap them
+		end
+
+		 -- No need to set/restore marks, get_visual_selection uses current ones
+		local text = get_visual_selection() -- Get the actual text content
 		local new_text = { "**" .. text .. "**" }
 
-		-- Calculate 0-based indices for nvim_buf_set_text
+		-- Calculate 0-based indices for nvim_buf_set_text using the ordered positions
 		local start_lnum = start_pos[2] - 1
 		local start_col = start_pos[3] - 1
 		local end_lnum = end_pos[2] - 1
@@ -156,8 +169,10 @@ function M.insert_bold(opts)
 
 		-- Replace the selected text directly
 		vim.api.nvim_buf_set_text(0, start_lnum, start_col, end_lnum, end_col, new_text)
+
+		-- Re-select the modified text
+		vim.cmd('normal! gv')
 	else
-		-- No range, prompt for input
 		vim.ui.input({ prompt = "Bold text: " }, function(text)
 			if text and text ~= "" then
 				vim.api.nvim_put({ "**" .. text .. "**" }, "c", true, true)
@@ -176,10 +191,23 @@ function M.insert_italic(opts)
 	if opts.range == 2 then
 		local start_pos = vim.fn.getpos("'<")
 		local end_pos = vim.fn.getpos("'>")
-		local text = get_visual_selection()
+
+		-- Check for invalid positions (e.g., first use before selection)
+		if start_pos[2] == 0 or end_pos[2] == 0 then
+			vim.notify("MarkdownTools: No visual selection marks found. Select text first.", vim.log.levels.WARN)
+			return -- Exit if marks are invalid
+		end
+
+		-- Ensure start_pos is always before end_pos
+		if start_pos[2] > end_pos[2] or (start_pos[2] == end_pos[2] and start_pos[3] > end_pos[3]) then
+			start_pos, end_pos = end_pos, start_pos -- Swap them
+		end
+
+		 -- No need to set/restore marks, get_visual_selection uses current ones
+		local text = get_visual_selection() -- Get the actual text content
 		local new_text = { "*" .. text .. "*" }
 
-		-- Calculate 0-based indices for nvim_buf_set_text
+		-- Calculate 0-based indices for nvim_buf_set_text using the ordered positions
 		local start_lnum = start_pos[2] - 1
 		local start_col = start_pos[3] - 1
 		local end_lnum = end_pos[2] - 1
@@ -187,8 +215,10 @@ function M.insert_italic(opts)
 
 		-- Replace the selected text directly
 		vim.api.nvim_buf_set_text(0, start_lnum, start_col, end_lnum, end_col, new_text)
+
+		-- Re-select the modified text
+		vim.cmd('normal! gv')
 	else
-		-- No range, prompt for input
 		vim.ui.input({ prompt = "Italic text: " }, function(text)
 			if text and text ~= "" then
 				vim.api.nvim_put({ "*" .. text .. "*" }, "l", true, true)
@@ -205,14 +235,34 @@ function M.insert_link(opts)
 
 	-- Check if the command was called with a range
 	if opts.range == 2 then
-		local text = get_visual_selection()
-		vim.api.nvim_command("normal! gvd")
+		local start_pos = vim.fn.getpos("'<")
+		local end_pos = vim.fn.getpos("'>")
+
+		-- Check for invalid positions
+		if start_pos[2] == 0 or end_pos[2] == 0 then
+			vim.notify("MarkdownTools: No visual selection marks found.", vim.log.levels.WARN)
+			return
+		end
+
+		-- Ensure start_pos is always before end_pos
+		if start_pos[2] > end_pos[2] or (start_pos[2] == end_pos[2] and start_pos[3] > end_pos[3]) then
+			start_pos, end_pos = end_pos, start_pos -- Swap them
+		end
+
+		local text = get_visual_selection() -- Get the selected text
+
 		vim.ui.input({ prompt = "URL: " }, function(url)
-			if url and url ~= "" then
-				vim.api.nvim_put({ "[" .. text .. "](" .. url .. ")" }, "c", false, true)
-			else
-				vim.api.nvim_put({ "[" .. text .. "](url)" }, "c", false, true)
-			end
+			local final_url = (url and url ~= "") and url or "url"
+			local new_text = { "[" .. text .. "](" .. final_url .. ")" }
+
+			-- Calculate 0-based indices for nvim_buf_set_text
+			local start_lnum = start_pos[2] - 1
+			local start_col = start_pos[3] - 1
+			local end_lnum = end_pos[2] - 1
+			local end_col = end_pos[3] -- end_col is exclusive
+
+			-- Replace the selected text directly
+			vim.api.nvim_buf_set_text(0, start_lnum, start_col, end_lnum, end_col, new_text)
 		end)
 	else
 		-- No range, prompt for input

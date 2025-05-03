@@ -57,66 +57,83 @@ function M.setup_keymaps(keymaps, commands_enabled, file_types)
 					end,
 					desc = "Header",
 				},
-				-- Removed insert_list_item keymap
 				{
 					command_key = "insert_code_block",
-					mode = { "n", "v" },
+					mode = "n", -- Normal mode only
 					key = keymaps.insert_code_block,
 					cmd = function()
-						local mode = vim.fn.mode(1)
-						local opts = {}
-						if mode:match("^[vV\022]") then
-							opts.range = 2
-							vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Esc>', true, false, true), 'n', false)
-						end
-						require("markdown-shortcuts.commands").insert_code_block(opts)
+						require("markdown-shortcuts.commands").insert_code_block({ range = 0 })
 					end,
-					desc = "Code block",
+					desc = "Code block (Normal)",
+				},
+				{
+					command_key = "insert_code_block",
+					mode = "v", -- Visual mode only
+					key = keymaps.insert_code_block,
+					cmd = function()
+						-- Still need Lua for prompt, exit visual first
+						vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Esc>', true, false, true), 'n', false)
+						require("markdown-shortcuts.commands").insert_code_block({ range = 2 })
+					end,
+					desc = "Code block (Visual)",
 				},
 				{
 					command_key = "insert_bold",
-					mode = { "n", "v" },
+					mode = "n", -- Normal mode only
 					key = keymaps.insert_bold,
 					cmd = function()
-						local mode = vim.fn.mode(1)
-						local opts = {}
-						if mode:match("^[vV\022]") then
-							opts.range = 2
-							vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Esc>', true, false, true), 'n', false)
-						end
-						require("markdown-shortcuts.commands").insert_bold(opts)
+						-- Call command function (prompts for input in normal mode)
+						require("markdown-shortcuts.commands").insert_bold({ range = 0 }) -- Explicitly pass range 0
 					end,
-					desc = "Bold text",
+					desc = "Bold text (Normal)",
+				},
+				{
+					command_key = "insert_bold",
+					mode = "v", -- Visual mode only
+					key = keymaps.insert_bold,
+					-- Use Vim command sequence for visual wrapping
+					cmd = 's**<C-r>"**<Esc>',
+					desc = "Bold text (Visual)",
+					opts = { remap = true } -- Allow remapping <C-r>
 				},
 				{
 					command_key = "insert_italic",
-					mode = { "n", "v" },
+					mode = "n", -- Normal mode only
 					key = keymaps.insert_italic,
 					cmd = function()
-						local mode = vim.fn.mode(1)
-						local opts = {}
-						if mode:match("^[vV\022]") then
-							opts.range = 2
-							vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Esc>', true, false, true), 'n', false)
-						end
-						require("markdown-shortcuts.commands").insert_italic(opts)
+						-- Call command function (prompts for input in normal mode)
+						require("markdown-shortcuts.commands").insert_italic({ range = 0 }) -- Explicitly pass range 0
 					end,
-					desc = "Italic text",
+					desc = "Italic text (Normal)",
+				},
+				{
+					command_key = "insert_italic",
+					mode = "v", -- Visual mode only
+					key = keymaps.insert_italic,
+					-- Use Vim command sequence for visual wrapping
+					cmd = 's*<C-r>"*<Esc>',
+					desc = "Italic text (Visual)",
+					opts = { remap = true } -- Allow remapping <C-r>
 				},
 				{
 					command_key = "insert_link",
-					mode = { "n", "v" },
+					mode = "n", -- Normal mode only
 					key = keymaps.insert_link,
 					cmd = function()
-						local mode = vim.fn.mode(1)
-						local opts = {}
-						if mode:match("^[vV\022]") then
-							opts.range = 2
-							vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Esc>', true, false, true), 'n', false)
-						end
-						require("markdown-shortcuts.commands").insert_link(opts)
+						require("markdown-shortcuts.commands").insert_link({ range = 0 })
 					end,
-					desc = "Link",
+					desc = "Link (Normal)",
+				},
+				{
+					command_key = "insert_link",
+					mode = "v", -- Visual mode only
+					key = keymaps.insert_link,
+					cmd = function()
+						-- Still need Lua for prompt, exit visual first
+						vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Esc>', true, false, true), 'n', false)
+						require("markdown-shortcuts.commands").insert_link({ range = 2 })
+					end,
+					desc = "Link (Visual)",
 				},
 				{
 					command_key = "insert_table",
@@ -126,19 +143,22 @@ function M.setup_keymaps(keymaps, commands_enabled, file_types)
 					desc = "Insert table",
 				},
 				{
-					command_key = "insert_checkbox", -- Renamed key
-					mode = { "n", "v" },
-					key = keymaps.insert_checkbox, -- Renamed key
+					command_key = "insert_checkbox",
+					mode = "n", -- Normal mode only
+					key = keymaps.insert_checkbox,
 					cmd = function()
-						local mode = vim.fn.mode(1)
-						local opts = {}
-						if mode:match("^[vV\022]") then
-							opts.range = 2
-							vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Esc>', true, false, true), 'n', false)
-						end
-						require("markdown-shortcuts.commands").insert_checkbox(opts)
+						require("markdown-shortcuts.commands").insert_checkbox({ range = 0 })
 					end,
-					desc = "Checkbox", -- Updated description
+					desc = "Checkbox (Normal)",
+				},
+				{
+					command_key = "insert_checkbox",
+					mode = "v", -- Visual mode only
+					key = keymaps.insert_checkbox,
+					-- Use Vim command sequence for visual wrapping
+					cmd = 's- [ ] <C-r>"<Esc>',
+					desc = "Checkbox (Visual)",
+					opts = { remap = true } -- Allow remapping <C-r>
 				},
 				{
 					command_key = "toggle_checkbox", -- Renamed key
@@ -160,16 +180,12 @@ function M.setup_keymaps(keymaps, commands_enabled, file_types)
 			for _, config in ipairs(keymap_configs) do
 				-- Only set keymap if the command is enabled
 				if commands_enabled[config.command_key] then
-					local opts = config.expr and { expr = config.expr } or {}
+					-- Combine base opts with config-specific opts
+					local base_opts = { desc = config.desc, buffer = true }
+					local final_opts = vim.tbl_extend("force", base_opts, config.opts or {})
 
-					local modes = config.mode
-					if type(modes) == "string" then
-						setup_keymap(modes, config.key, config.cmd, config.desc, opts)
-					else
-						for _, mode in ipairs(modes) do
-							setup_keymap(mode, config.key, config.cmd, config.desc, opts)
-						end
-					end
+					-- Use setup_keymap helper
+					setup_keymap(config.mode, config.key, config.cmd, config.desc, final_opts)
 				end
 			end
 
