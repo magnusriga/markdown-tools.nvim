@@ -175,7 +175,7 @@ Stable. Contributions and suggestions are welcome.
 
 ## Contributing
 
-Please see CONTRIBUTING.md (if available) or open an issue/pull request.
+Please see CONTRIBUTING.md or open an issue/pull request.
 
 ## License
 
