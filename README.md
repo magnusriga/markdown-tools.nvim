@@ -40,8 +40,8 @@ Use your favorite plugin manager.
   -- dependencies = { 'nvim-telescope/telescope.nvim' },
   opts = {
       -- Your custom configuration here
-      -- Example: Use Telescope for template picking
-      -- picker = 'telescope',
+      -- Example: Use fzf-lua for template picking
+      -- picker = 'fzf',
   },
 }
 ```
