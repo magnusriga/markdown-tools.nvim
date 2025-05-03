@@ -1,4 +1,4 @@
-# markdown-shortcuts.nvim
+# markdown-tools.nvim
 
 <!-- Badges (replace with actual badges) -->
 
