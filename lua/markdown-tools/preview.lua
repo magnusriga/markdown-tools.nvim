@@ -1,4 +1,4 @@
-local config = require("markdown-shortcuts.config")
+local config = require("markdown-tools.config")
 
 local M = {}
 

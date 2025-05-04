@@ -1,8 +1,8 @@
--- Entry point for plugin/ directory loading.
--- This ensures the setup function is available but doesn't run it automatically.
--- Users should call require("markdown-shortcuts").setup() in their config.
+-- Entry point for the plugin when loaded via packer/lazy legacy `plugin/` directory
+-- This just calls the setup function from the main module.
 
--- If you want the plugin to load automatically without explicit setup,
--- you could call setup here, but it's generally better practice
--- to let users control when setup runs.
--- require("markdown-shortcuts").setup()
+-- Check if the main module is already loaded (e.g., by lazy.nvim `opts` or `config`)
+-- Avoid running setup twice.
+if not package.loaded['markdown-tools'] then
+  pcall(require, 'markdown-tools')
+end

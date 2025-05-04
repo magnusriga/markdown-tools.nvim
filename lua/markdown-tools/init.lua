@@ -1,7 +1,7 @@
-local config = require("markdown-shortcuts.config")
-local autocmds = require("markdown-shortcuts.autocmds")
-local keymaps = require("markdown-shortcuts.keymaps")
-local commands = require("markdown-shortcuts.commands")
+local config = require("markdown-tools.config")
+local autocmds = require("markdown-tools.autocmds")
+local keymaps = require("markdown-tools.keymaps")
+local commands = require("markdown-tools.commands")
 
 -- Module definition
 local M = {}
@@ -18,6 +18,8 @@ local function register_command(name, func, opts)
 		command_key = "insert_code_block"
 	elseif name == "MarkdownBold" then
 		command_key = "insert_bold"
+	elseif name == "MarkdownHighlight" then
+		command_key = "insert_highlight"
 	elseif name == "MarkdownItalic" then
 		command_key = "insert_italic"
 	elseif name == "MarkdownLink" then
@@ -60,6 +62,9 @@ function M.setup(opts)
 	register_command("MarkdownBold", function(args)
 		commands.insert_bold(args)
 	end, { nargs = "*", desc = "Insert bold text.", range = true })
+	register_command("MarkdownHighlight", function(args)
+		commands.insert_highlight(args)
+	end, { nargs = "*", desc = "Insert highlight text.", range = true })
 	register_command("MarkdownItalic", function(args)
 		commands.insert_italic(args)
 	end, { nargs = "*", desc = "Insert italic text.", range = true })

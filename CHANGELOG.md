@@ -1,3 +1,5 @@
+<!-- markdownlint-disable MD024 -->
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
@@ -9,7 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added default keybinding `<leader>mH` for inserting headers.
+- Added ability to use generator functions for frontmatter and placeholders in templates.
+
 ### Changed
+
+- Updated health checks (`:checkhealth markdown-tools`).
 
 ### Deprecated
 
@@ -17,14 +24,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Fixed minor bugs to enhance performance.
+
 ### Security
 
-## [0.1.0] - 2025-05-04
+## [0.1.0] - 2024-03-10
 
 ### Added
 
-- Initial release of `markdown-shortcuts.nvim`.
-- Features include: inserting headers, code blocks, bold/italic text, links, tables, checkboxes; toggling checkboxes; creating files from templates; list continuation; configurable keymaps and commands; optional buffer settings.
+- Initial release of `markdown-tools.nvim`.
 
-[Unreleased]: https://github.com/magnusriga/markdown-shortcuts.nvim/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/magnusriga/markdown-shortcuts.nvim/releases/tag/v0.1.0
+[Unreleased]: https://github.com/magnusriga/markdown-tools.nvim/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/magnusriga/markdown-tools.nvim/releases/tag/v0.1.0
