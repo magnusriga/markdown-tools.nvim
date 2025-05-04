@@ -1,4 +1,4 @@
-# markdown-tools.nvim 🪄
+# markdown-tools.nvim  🪄
 
 [![Lua](https://img.shields.io/badge/Lua-blue.svg?style=flat-square&logo=lua)](https://www.lua.org)
 [![License](https://img.shields.io/github/license/magnusriga/markdown-tools.nvim?style=flat-square)](LICENSE)
