@@ -18,7 +18,7 @@ The markdown created, including the frontmatter, is compatible with [obsidian](h
 - **🎨 Visual Mode Integration:** Wrap selected text with bold, italic, links, or highlights.
 - **✅ Checkbox Management:** Insert new checkboxes (`- [ ]`) and toggle their state (`- [x]`).
 - **➡️ List Continuation:** Automatically continue lists (bulleted, numbered, checkbox) when pressing Enter.
-- **🔧 Configurable:** Customize keymaps, enable/disable commands, set template directory, choose picker, and configure Markdown-specific buffer options.
+- **🔧 Configurable:** Customize keymaps, enable/disable commands, set template directory, choose picker, configure buffer options, ++.
 - **👁️ Preview:** Preview command, using other auto-detected nvim plugins (see below) or default system application.
 
 ## ⚡️ Requirements
