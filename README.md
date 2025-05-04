@@ -294,7 +294,8 @@ These generated values are then used in two ways:
    - `{{timestamp}}`: Timestamp used during generation (YYYYMMDDHHMM). Generated internally.
    - `{{key}}`: For each key in `frontmatter_custom`, the corresponding placeholder `{{key}}` is replaced by the value returned by its function. If the function returns a list, it's inserted in YAML list format (e.g., `["item1", "item2"]`).
 
-   If a generator function returns `nil`, the corresponding placeholder is replaced with an empty string. **Any other text within double curly braces (e.g., `{{unsupported}}`) that does not match a supported placeholder will be left unchanged in the template content.**
+> [!NOTE]
+> If a generator function returns `nil`, the corresponding placeholder is replaced with an empty string. **Any other text within double curly braces (e.g., `{{unsupported}}`) that does not match a supported placeholder will be left unchanged in the template content.**
 
 2. **Automatic Frontmatter Insertion:** After placeholder replacement, the plugin checks if the template content starts with `---`.
    - If it **does not** start with `---` AND the `insert_frontmatter` configuration option is `true` (the default), a new frontmatter block is automatically added to the beginning of the file. This block includes all fields (standard and custom) for which the generator function returned a non-nil value, formatted correctly in YAML. List values will be formatted like `tags: [tag1, tag2]`.
