@@ -1,7 +1,5 @@
 # markdown-tools.nvim
 
-<!-- Badges (replace with actual badges) -->
-
 [![Lua](https://img.shields.io/badge/Lua-blue.svg?style=flat-square&logo=lua)](https://www.lua.org)
 [![License](https://img.shields.io/github/license/magnusriga/markdown-tools.nvim?style=flat-square)](LICENSE)
 
@@ -9,15 +7,19 @@
 
 `markdown-tools.nvim` provides a set of commands and configurable keymaps to streamline common Markdown editing tasks, from inserting elements like headers and code blocks to managing checkbox lists and creating files from templates.
 
+For users migrating from plugins like [obsidian.nvim](https://github.com/epwalsh/obsidian.nvim), `markdown-tools.nvim` aims to fill some gaps by offering features such as creating new notes based on templates with predefined frontmatter, helping maintain a familiar workflow.
+
+The markdown created, including the frontmatter, is compatible with [obsidian](https://obsidian.md/) and other Markdown editors.
+
 ## ✨ Features
 
-- **Insert Markdown Elements:** Quickly add headers, code blocks (with language prompt), bold/italic text, links, tables, and checkbox list items.
-- **Visual Mode Integration:** Wrap selected text with bold, italic, links, or code blocks.
+- **Template Creation:** Create new Markdown files from predefined templates using your choice of picker (`fzf`, `telescope`, `snacks`). Automatically adds frontmatter with configurable placeholders (e.g., `alias`, `tags`).
+- **Insert Markdown Elements:** Quickly add links, checkboxes, tables, headers, bold/italic/highlight text, code blocks (with language prompt), and more.
+- **Visual Mode Integration:** Wrap selected text with bold, italic, links, or highlights.
 - **Checkbox Management:** Insert new checkboxes (`- [ ]`) and toggle their state (`- [x]`).
-- **Template Creation:** Create new Markdown files from predefined templates using your choice of picker (`fzf`, `telescope`, `mini.pick`).
 - **List Continuation:** Automatically continue Markdown lists (bulleted, numbered, checkbox) when pressing Enter.
 - **Configurable:** Customize keymaps, enable/disable commands, set template directory, choose picker, and configure Markdown-specific buffer options.
-- **Preview:** Basic preview command (requires external tool configuration).
+- **Preview:** Preview command, using other auto-detected nvim plugins (see below) or default system application.
 
 ## ⚡️ Requirements
 
@@ -28,7 +30,7 @@
 
 Use your favorite plugin manager.
 
-**lazy.nvim**
+### lazy.nvim
 
 ```lua
 {
@@ -45,7 +47,7 @@ Use your favorite plugin manager.
 }
 ```
 
-**packer.nvim**
+### packer.nvim
 
 ```lua
 use {
@@ -73,19 +75,71 @@ require('markdown-tools').setup({
   -- Directory containing your Markdown templates
   template_dir = vim.fn.expand("~/.config/nvim/templates"),
 
-  -- Picker to use for selecting templates ('fzf', 'telescope', 'snacks'/'mini.pick')
+  -- Picker to use for selecting templates ('fzf', 'telescope', 'snacks')
   picker = "fzf",
 
-  -- Default frontmatter fields for new files created from templates
-  alias = {},
-  tags = {},
+  -- Whether to automatically insert frontmatter if the template doesn't have it
+  insert_frontmatter = true,
+
+  -- Functions to generate frontmatter fields.
+  -- These functions determine the values used when automatically inserting frontmatter
+  -- AND when replacing placeholders in templates.
+  -- Each function receives a table `opts` with:
+  --   opts.timestamp (string): YYYYMMDDHHMM
+  --   opts.filename (string): Full filename including .md extension.
+  --   opts.sanitized_name (string): Filename sanitized for use in IDs.
+  --   opts.filepath (string): Absolute path to the new file.
+  -- Return nil from a function to omit that field from automatically generated frontmatter
+  -- and replace its corresponding placeholder with an empty string.
+
+  -- Corresponds to {{id}} placeholder
+  frontmatter_id = function(opts)
+    -- Default: YYYYMMDDHHMM_sanitized-filename
+    return opts.timestamp .. "_" .. opts.sanitized_name
+  end,
+
+  -- Corresponds to {{title}} placeholder
+  frontmatter_title = function(opts)
+    -- Default: Filename without extension
+    return vim.fn.fnamemodify(opts.filename, ":t:r")
+  end,
+
+  -- Corresponds to {{alias}} placeholder (expects a list/table of strings)
+  frontmatter_alias = function(_opts)
+    -- Default: Empty list
+    return {}
+  end,
+
+  -- Corresponds to {{tags}} placeholder (expects a list/table of strings)
+  frontmatter_tags = function(_opts)
+    -- Default: Empty list
+    return {}
+  end,
+
+  -- Corresponds to {{date}} placeholder
+  frontmatter_date = function(_opts)
+    -- Default: Current date YYYY-MM-DD
+    return os.date("%Y-%m-%d")
+  end,
+
+  -- Define custom frontmatter fields and their generator functions.
+  -- The key is the field name (used in frontmatter and as the placeholder {{key}}).
+  -- The value is a function receiving the `opts` table.
+  -- It can return a string, a table (list) of strings, or nil.
+  frontmatter_custom = {},
+  -- Example of how to define custom fields:
+  -- frontmatter_custom = {
+  --   status = function(_opts) return "draft" end,
+  --   related = function(_opts) return {} end,
+  -- },
 
   -- Keymappings for shortcuts. Set to `false` or `""` to disable.
   keymaps = {
     create_from_template = "<leader>mnt", -- New Template
-    insert_header = "<leader>mh",        -- Header
+    insert_header = "<leader>mH",        -- Header
     insert_code_block = "<leader>mc",    -- Code block
     insert_bold = "<leader>mb",        -- Bold
+    insert_highlight = "<leader>mh",    -- Highlight
     insert_italic = "<leader>mi",      -- Italic
     insert_link = "<leader>ml",        -- Link
     insert_table = "<leader>mt",        -- Table
@@ -127,6 +181,61 @@ require('markdown-tools').setup({
 })
 ```
 
+### Types
+
+Here are the type definitions for the configuration options:
+
+```lua
+---@class KeymapConfig
+---@field create_from_template string? Keymap for creating from template
+---@field insert_header string? Keymap for inserting header
+---@field insert_list_item string? Keymap for inserting list item
+---@field insert_code_block string? Keymap for inserting code block
+---@field insert_bold string? Keymap for inserting bold text
+---@field insert_italic string? Keymap for inserting italic text
+---@field insert_link string? Keymap for inserting link
+---@field insert_table string? Keymap for inserting table
+---@field insert_checkbox string? Keymap for inserting checkbox
+---@field toggle_checkbox string? Keymap for toggling checkbox
+---@field preview string? Keymap for previewing markdown
+
+---@class CommandEnableConfig
+---@field create_from_template boolean Enable create from template command
+---@field insert_header boolean Enable insert header command
+---@field insert_code_block boolean Enable insert code block command
+---@field insert_bold boolean Enable insert bold text command
+---@field insert_italic boolean Enable insert italic text command
+---@field insert_link boolean Enable insert link command
+---@field insert_table boolean Enable insert table command
+---@field insert_checkbox boolean Enable insert checkbox command
+---@field toggle_checkbox boolean Enable toggle checkbox command
+---@field preview boolean Enable preview command
+
+---@class Config
+---@field template_dir string Directory for templates
+---@field picker 'fzf' | 'snacks' | 'telescope' Picker to use for file selection
+---@field alias string[] Default aliases for new markdown files
+---@field tags string[] Default tags for new markdown files
+---@field insert_frontmatter boolean Automatically add frontmatter when creating new markdown files with e.g. `MarkdownNewTemplate`.
+---@field frontmatter_id fun(opts: {timestamp: string, filename: string, sanitized_name: string, filepath: string}):string | nil Function to generate the 'id' field in the frontmatter. Return nil to omit the id field.
+---@field frontmatter_title fun(opts: {timestamp: string, filename: string, sanitized_name: string, filepath: string}):string | nil Function to generate the 'title' field in the frontmatter. Return nil to omit the title field.
+---@field frontmatter_alias fun(opts: {timestamp: string, filename: string, sanitized_name: string, filepath: string}):string[] | nil Function to generate the 'alias' field in the frontmatter. Return nil to omit the alias field.
+---@field frontmatter_tags fun(opts: {timestamp: string, filename: string, sanitized_name: string, filepath: string}):string[] | nil Function to generate the 'tags' field in the frontmatter. Return nil to omit the tags field.
+---@field frontmatter_date fun(opts: {timestamp: string, filename: string, sanitized_name: string, filepath: string}):string | nil Function to generate the 'date' field in the frontmatter. Return nil to omit the date field.
+---@field frontmatter_custom table<string, fun(opts: {timestamp: string, filename: string, sanitized_name: string, filepath: string}):string|string[]|nil> Table defining custom frontmatter fields and their generator functions.
+---@field keymaps KeymapConfig Keymappings for markdown shortcuts
+---@field commands CommandEnableConfig Configuration for enabling/disabling commands
+---@field preview_command string|function|nil Command or function to use for previewing markdown
+---@field enable_local_options boolean Whether to enable local options for markdown files
+---@field wrap boolean Whether to enable line wrapping for markdown files
+---@field conceallevel number Conceallevel for markdown files
+---@field concealcursor string Concealcursor for markdown files
+---@field spell boolean Whether to enable spell checking for markdown files
+---@field spelllang string Language for spell checking
+---@field file_types string[] File types where keymaps should be active
+---@field continue_lists_on_enter boolean Automatically continue lists on Enter
+```
+
 ## 🚀 Usage
 
 ### Commands
@@ -137,20 +246,22 @@ The following commands are available, most work in both visual and normal mode:
 - `:MarkdownHeader`: Insert a header. Prompts for level (1-6) or uses `[count]` (e.g., `:3MarkdownHeader`). In Visual mode, wraps selection.
 - `:MarkdownCodeBlock`: Insert a code block. Prompts for language. In Visual mode, wraps selection.
 - `:MarkdownBold`: Insert `**bold text**`. In Visual mode, wraps selection.
+- `:MarkdownHighlight`: Insert `==highlight text==`. In Visual mode, wraps selection.
 - `:MarkdownItalic`: Insert `*italic text*`. In Visual mode, wraps selection.
 - `:MarkdownLink`: Insert `[link text](url)`. Prompts for text and URL. In Visual mode, uses selection as text and prompts for URL.
 - `:MarkdownInsertTable`: Insert a table. Prompts for rows and columns.
 - `:MarkdownCheckbox`: Insert a checkbox list item (`- [ ]`). In Visual mode, uses selection as text.
 - `:MarkdownToggleCheckbox`: Toggles the checkbox state (`[ ]` <=> `[x]`) on the current line.
-- `:MarkdownPreview`: Preview markdown.
+- `:MarkdownPreview`: Preview markdown. Saves the current file, then attempts to preview using: 1) the configured `preview_command`, 2) an auto-detected plugin (`markdown-preview.nvim`, `peek.nvim`, `glow.nvim`, `nvim-markdown-preview`), or 3) the system's default application as a fallback.
 
 ### Keymaps
 
 Default keymaps are provided (see Configuration). Use them in Normal or Visual mode within Markdown files.
 
-- `<leader>mh`: Insert header (prompts or use count).
+- `<leader>mH`: Insert header.
 - `<leader>mc`: Insert code block.
 - `<leader>mb`: Insert bold.
+- `<leader>mh`: Insert highlight.
 - `<leader>mi`: Insert italic.
 - `<leader>ml`: Insert link.
 - `<leader>mt`: Insert table.
@@ -158,6 +269,38 @@ Default keymaps are provided (see Configuration). Use them in Normal or Visual m
 - `<leader>mx`: Toggle checkbox.
 - `<leader>mp`: Preview (if configured).
 - `<leader>mnt`: Create new file from template.
+
+### Creating Markdown Files from Templates
+
+The `:MarkdownNewTemplate` command (default keymap `<leader>mnt`) allows you to create new Markdown files based on templates stored in your configured `template_dir`.
+
+1. Run the command.
+2. Select a template file using the configured picker (fzf, telescope, or snacks).
+3. Enter a name for the new file (the `.md` extension will be added automatically if omitted).
+4. The new file will be created in the same directory as the currently open file.
+
+#### Frontmatter Handling
+
+When creating a file from a template, the configured frontmatter generator functions (`frontmatter_id`, `frontmatter_title`, `frontmatter_custom`, etc.) are always executed first to produce values for the standard and custom fields.
+
+These generated values are then used in two ways:
+
+1. **Placeholder Replacement:** The content of the selected template file is processed. The following placeholders are supported and replaced with their corresponding generated values:
+
+   - `{{id}}`: Value from `frontmatter_id` function.
+   - `{{title}}`: Value from `frontmatter_title` function.
+   - `{{date}}`: Value from `frontmatter_date` function.
+   - `{{alias}}`: YAML list format of values from `frontmatter_alias` function (e.g., `["alias1", "alias2"]`).
+   - `{{tags}}`: YAML list format of values from `frontmatter_tags` function (e.g., `["tag1", "tag2"]`).
+   - `{{datetime}}`: Current date and time (YYYY-MM-DD HH:MM:SS). Generated internally.
+   - `{{timestamp}}`: Timestamp used during generation (YYYYMMDDHHMM). Generated internally.
+   - `{{key}}`: For each key in `frontmatter_custom`, the corresponding placeholder `{{key}}` is replaced by the value returned by its function. If the function returns a list, it's inserted in YAML list format (e.g., `["item1", "item2"]`).
+
+   If a generator function returns `nil`, the corresponding placeholder is replaced with an empty string. **Any other text within double curly braces (e.g., `{{unsupported}}`) that does not match a supported placeholder will be left unchanged in the template content.**
+
+2. **Automatic Frontmatter Insertion:** After placeholder replacement, the plugin checks if the template content starts with `---`.
+   - If it **does not** start with `---` AND the `insert_frontmatter` configuration option is `true` (the default), a new frontmatter block is automatically added to the beginning of the file. This block includes all fields (standard and custom) for which the generator function returned a non-nil value, formatted correctly in YAML. List values will be formatted like `tags: [tag1, tag2]`.
+   - If it **does** start with `---`, or if `insert_frontmatter` is `false`, no new frontmatter block is inserted. The template's existing frontmatter (with placeholders already replaced) is kept as is.
 
 ### List Continuation
 
@@ -174,3 +317,7 @@ Please see CONTRIBUTING.md or open an issue/pull request.
 ## License
 
 Distributed under the MIT License. See `LICENSE` file for more information.
+
+## 🙏 Credits
+
+- The excellent [obsidian.nvim](https://github.com/epwalsh/obsidian.nvim), for inspiration on various features, including creating Markdown notes from templates.

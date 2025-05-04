@@ -1,7 +1,7 @@
 -- Plugin specification for lazy.nvim
 return {
-  "nfu/markdown-shortcuts.nvim",
-  name = "markdown-shortcuts",
+  "magnusriga/markdown-tools.nvim",
+  name = "markdown-tools",
   version = "*",
   lazy = true,
   ft = { "markdown" },
@@ -19,10 +19,10 @@ return {
   },
   dependencies = {
     -- Optional dependencies, will be used if available
-    { "nvim-telescope/telescope.nvim", optional = true },
+    { "folke/snacks.nvim", optional = true },
   },
   config = function(_, opts)
-    require("markdown-shortcuts").setup(opts)
+    require("markdown-tools").setup(opts)
   end,
   -- Default configuration
   opts = {

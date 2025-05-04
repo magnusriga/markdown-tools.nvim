@@ -1,4 +1,4 @@
-local template = require("markdown-shortcuts.template")
+local template = require("markdown-tools.template")
 
 local M = {}
 

@@ -1,4 +1,4 @@
----@mod markdown-shortcuts.keymaps Keymap setup functionality
+---@mod markdown-tools.keymaps Keymap setup functionality
 local M = {}
 
 --- Set up a keymap if the key is defined
@@ -53,7 +53,7 @@ function M.setup_keymaps(keymaps, commands_enabled, file_types)
 							vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Esc>', true, false, true), 'n', false)
 						end
 						-- Call the command function directly
-						require("markdown-shortcuts.commands").insert_header(opts)
+						require("markdown-tools.commands").insert_header(opts)
 					end,
 					desc = "Header",
 				},
@@ -62,7 +62,7 @@ function M.setup_keymaps(keymaps, commands_enabled, file_types)
 					mode = "n", -- Normal mode only
 					key = keymaps.insert_code_block,
 					cmd = function()
-						require("markdown-shortcuts.commands").insert_code_block({ range = 0 })
+						require("markdown-tools.commands").insert_code_block({ range = 0 })
 					end,
 					desc = "Code block (Normal)",
 				},
@@ -73,7 +73,7 @@ function M.setup_keymaps(keymaps, commands_enabled, file_types)
 					cmd = function()
 						-- Still need Lua for prompt, exit visual first
 						vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Esc>', true, false, true), 'n', false)
-						require("markdown-shortcuts.commands").insert_code_block({ range = 2 })
+						require("markdown-tools.commands").insert_code_block({ range = 2 })
 					end,
 					desc = "Code block (Visual)",
 				},
@@ -83,7 +83,7 @@ function M.setup_keymaps(keymaps, commands_enabled, file_types)
 					key = keymaps.insert_bold,
 					cmd = function()
 						-- Call command function (prompts for input in normal mode)
-						require("markdown-shortcuts.commands").insert_bold({ range = 0 }) -- Explicitly pass range 0
+						require("markdown-tools.commands").insert_bold({ range = 0 }) -- Explicitly pass range 0
 					end,
 					desc = "Bold text (Normal)",
 				},
@@ -97,12 +97,31 @@ function M.setup_keymaps(keymaps, commands_enabled, file_types)
 					opts = { remap = true } -- Allow remapping <C-r>
 				},
 				{
+					command_key = "insert_highlight",
+					mode = "n", -- Normal mode only
+					key = keymaps.insert_highlight,
+					cmd = function()
+						-- Call command function (prompts for input in normal mode)
+						require("markdown-tools.commands").insert_highlight({ range = 0 }) -- Explicitly pass range 0
+					end,
+					desc = "Highlight text (Normal)",
+				},
+				{
+					command_key = "insert_highlight",
+					mode = "v", -- Visual mode only
+					key = keymaps.insert_highlight,
+					-- Use Vim command sequence for visual wrapping
+					cmd = 's==<C-r>"==<Esc>',
+					desc = "Highlight text (Visual)",
+					opts = { remap = true } -- Allow remapping <C-r>
+				},
+				{
 					command_key = "insert_italic",
 					mode = "n", -- Normal mode only
 					key = keymaps.insert_italic,
 					cmd = function()
 						-- Call command function (prompts for input in normal mode)
-						require("markdown-shortcuts.commands").insert_italic({ range = 0 }) -- Explicitly pass range 0
+						require("markdown-tools.commands").insert_italic({ range = 0 }) -- Explicitly pass range 0
 					end,
 					desc = "Italic text (Normal)",
 				},
@@ -120,7 +139,7 @@ function M.setup_keymaps(keymaps, commands_enabled, file_types)
 					mode = "n", -- Normal mode only
 					key = keymaps.insert_link,
 					cmd = function()
-						require("markdown-shortcuts.commands").insert_link({ range = 0 })
+						require("markdown-tools.commands").insert_link({ range = 0 })
 					end,
 					desc = "Link (Normal)",
 				},
@@ -128,12 +147,15 @@ function M.setup_keymaps(keymaps, commands_enabled, file_types)
 					command_key = "insert_link",
 					mode = "v", -- Visual mode only
 					key = keymaps.insert_link,
-					cmd = function()
-						-- Still need Lua for prompt, exit visual first
-						vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Esc>', true, false, true), 'n', false)
-						require("markdown-shortcuts.commands").insert_link({ range = 2 })
-					end,
+					-- Use Vim command sequence + Lua helper for prompt
+					-- 1. Substitute selection: `s[<C-r>"]()`
+					-- 2. Exit substitute mode: `<Esc>`
+					-- 3. Move cursor left: `<Cmd>normal! h<CR>`
+					-- 4. Enter insert mode (before cursor): `<Cmd>startinsert<CR>`
+					-- 5. Call Lua helper to prompt and insert URL
+					cmd = 's[<C-r>"]()<Esc><Cmd>normal! h<CR><Cmd>startinsert<CR><Cmd>lua require("markdown-tools.commands").prompt_and_insert_url()<CR>',
 					desc = "Link (Visual)",
+					opts = { remap = true } -- Allow remapping <C-r>, <Esc>, <Cmd>, <CR>
 				},
 				{
 					command_key = "insert_table",
@@ -147,7 +169,7 @@ function M.setup_keymaps(keymaps, commands_enabled, file_types)
 					mode = "n", -- Normal mode only
 					key = keymaps.insert_checkbox,
 					cmd = function()
-						require("markdown-shortcuts.commands").insert_checkbox({ range = 0 })
+						require("markdown-tools.commands").insert_checkbox({ range = 0 })
 					end,
 					desc = "Checkbox (Normal)",
 				},
@@ -155,10 +177,14 @@ function M.setup_keymaps(keymaps, commands_enabled, file_types)
 					command_key = "insert_checkbox",
 					mode = "v", -- Visual mode only
 					key = keymaps.insert_checkbox,
-					-- Use Vim command sequence for visual wrapping
-					cmd = 's- [ ] <C-r>"<Esc>',
-					desc = "Checkbox (Visual)",
-					opts = { remap = true } -- Allow remapping <C-r>
+						-- Call the Lua function directly, which handles line insertion
+					cmd = function()
+						-- Exit visual mode before calling the command
+						vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Esc>', true, false, true), 'n', false)
+						require("markdown-tools.commands").insert_checkbox()
+					end,
+					desc = "Checkbox (Visual - Start of Line)", -- Updated description
+					opts = nil -- Remove remap = true, no longer needed
 				},
 				{
 					command_key = "toggle_checkbox", -- Renamed key
@@ -190,12 +216,28 @@ function M.setup_keymaps(keymaps, commands_enabled, file_types)
 			end
 
 			-- Add keymap for continuing lists on Enter if enabled
-			if require("markdown-shortcuts.config").options.continue_lists_on_enter then
+			if require("markdown-tools.config").options.continue_lists_on_enter then
 				vim.keymap.set("i", "<CR>", function()
-					require('markdown-shortcuts.lists').continue_list_on_enter()
-					-- Return empty string as the function now handles buffer changes
-					return ""
-				end, { buffer = true, silent = true, desc = "Continue markdown list" })
+					local line = vim.api.nvim_get_current_line()
+					local _, cursor_col = unpack(vim.api.nvim_win_get_cursor(0))
+
+					-- Define separate patterns for each list type
+					local pattern_bullet = "^%s*[-*+]%s+"
+					local pattern_numbered = "^%s*%d+%.%s+"
+					local pattern_checkbox = "^%s*[-*+] %[[ x]%]%s+"
+
+					-- Check if cursor is at end and any pattern matched
+					local is_list_end = cursor_col == #line
+						and (line:match(pattern_bullet) or line:match(pattern_numbered) or line:match(pattern_checkbox))
+
+					if is_list_end then
+						-- If it is, call the list continuation function directly
+						require('markdown-tools.lists').continue_list_on_enter()
+					else
+						-- Otherwise, feed a normal <CR> keypress
+						vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<CR>", true, false, true), "n", false)
+					end
+				end, { buffer = true, desc = "Continue Markdown List" })
 			end
 		end,
 	})

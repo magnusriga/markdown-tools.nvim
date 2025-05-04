@@ -1,13 +1,13 @@
-# Contributing to markdown-shortcuts.nvim
+# Contributing to markdown-tools.nvim
 
-Thank you for considering contributing to `markdown-shortcuts.nvim`! We appreciate your time and effort.
+Thank you for considering contributing to `markdown-tools.nvim`! We appreciate your time and effort.
 
 ## How Can I Contribute?
 
 ### Reporting Bugs
 
-- Ensure the bug was not already reported by searching on GitHub under [Issues](https://github.com/magnusriga/markdown-shortcuts.nvim/issues).
-- If you're unable to find an open issue addressing the problem, [open a new one](https://github.com/magnusriga/markdown-shortcuts.nvim/issues/new). Be sure to include a **title and clear description**, as much relevant information as possible, and a **code sample** or an **executable test case** demonstrating the expected behavior that is not occurring.
+- Ensure the bug was not already reported by searching on GitHub under [Issues](https://github.com/magnusriga/markdown-tools.nvim/issues).
+- If you're unable to find an open issue addressing the problem, [open a new one](https://github.com/magnusriga/markdown-tools.nvim/issues/new). Be sure to include a **title and clear description**, as much relevant information as possible, and a **code sample** or an **executable test case** demonstrating the expected behavior that is not occurring.
 - Use the "Bug Report" template if available.
 
 ### Suggesting Enhancements

@@ -1,4 +1,4 @@
----@mod markdown-shortcuts.lists List handling utilities
+---@mod markdown-tools.lists List handling utilities
 local M = {}
 
 --- Handles the <CR> key press in insert mode for markdown files.
@@ -10,13 +10,7 @@ function M.continue_list_on_enter()
 	local bufnr = vim.api.nvim_get_current_buf()
 	local winid = vim.api.nvim_get_current_win()
 	local line = vim.api.nvim_get_current_line()
-	local cursor_row, cursor_col = unpack(vim.api.nvim_win_get_cursor(winid)) -- 1-based row, 0-based col
-
-	-- If cursor is not at the end of the line, let Neovim handle it
-	if cursor_col < #line then
-		vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<CR>", true, false, true), "n", false)
-		return
-	end
+	local cursor_row, _ = unpack(vim.api.nvim_win_get_cursor(winid)) -- 1-based row
 
 	-- Try to match different list types
 	local indent, marker, content
@@ -27,8 +21,8 @@ function M.continue_list_on_enter()
 	if indent then
 		marker_type = "number"
 	else
-		-- Match checkbox lists (e.g., "- [ ] content")
-		indent, marker, content = line:match("^(%s*)(- %[[ x]%]%s+)(.*)$")
+		-- Match checkbox lists (e.g., "- [ ] content", "* [x] content")
+		indent, marker, content = line:match("^(%s*)([-*+] %[[ x]%]%s+)(.*)$") -- Allow -, *, +
 		if indent then
 			marker_type = "checkbox"
 		else
@@ -40,8 +34,10 @@ function M.continue_list_on_enter()
 		end
 	end
 
-	-- If no list marker matched, let Neovim handle it
+	-- This function should only be called via the keymap, which already checks
+	-- if it's a list line and cursor is at the end. So, marker_type should exist.
 	if not marker_type then
+		-- Fallback just in case: insert a normal newline
 		vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<CR>", true, false, true), "n", false)
 		return
 	end
@@ -53,7 +49,7 @@ function M.continue_list_on_enter()
 		-- Insert a new blank line below
 		vim.api.nvim_buf_set_lines(bufnr, cursor_row, cursor_row, false, { "" })
 		-- Move cursor to the beginning of the new line
-		vim.api.nvim_win_set_cursor(winid, { cursor_row + 1, 0 })
+		vim.api.nvim_win_set_cursor(winid, { cursor_row + 1, #indent }) -- Move to end of indent
 	else
 		-- Calculate the next marker
 		local next_marker = marker
@@ -61,12 +57,16 @@ function M.continue_list_on_enter()
 			local num_match = marker:match("(%d+)%.%s+$")
 			if num_match then
 				local next_num = tonumber(num_match) + 1
-				local marker_prefix = marker:match("^%d+(%.%s+)$")
-				next_marker = string.format("%d%s", next_num, marker_prefix or ". ")
+				-- Correctly capture the suffix (e.g., ". ")
+				local marker_suffix = marker:match("^%d+(%.%s+)")
+				next_marker = string.format("%d%s", next_num, marker_suffix or ". ")
 			end
 		elseif marker_type == "checkbox" then
-			next_marker = "- [ ] "
+			-- Preserve the original bullet type (-, *, +)
+			local bullet = marker:match("^([*-+])")
+			next_marker = (bullet or "-") .. " [ ] " -- Default to unchecked
 		end
+		-- For bullet lists, next_marker is already correct (same as current marker)
 
 		-- Insert the new list item line below the current one
 		local new_line_content = indent .. next_marker

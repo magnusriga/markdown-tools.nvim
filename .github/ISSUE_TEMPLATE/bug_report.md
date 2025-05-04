@@ -12,15 +12,9 @@ A clear and concise description of what the bug is.
 **To Reproduce**
 Steps to reproduce the behavior:
 
-1. Use this minimal configuration:
-   ```lua
-   -- Paste minimal init.lua or relevant setup here
-   ```
-2. Start Neovim with `nvim -u minimal_init.lua`
-3. Run the following steps:
-   - Step 1
-   - Step 2
-   - ...
+1. Go to '...'
+2. Click on '...'
+3. Scroll down to '...'
 4. See error
 
 **Expected behavior**
@@ -31,9 +25,15 @@ If applicable, add screenshots to help explain your problem.
 
 **Environment (please complete the following information):**
 
-- Neovim Version: [e.g. NVIM v0.9.0]
-- OS: [e.g. Ubuntu 22.04]
-- markdown-shortcuts.nvim version: [e.g. 0.1.0 or commit hash]
+- Neovim Version [e.g. NVIM v0.9.1]:
+- OS [e.g. Ubuntu 22.04]:
+- markdown-tools.nvim version: [e.g. 0.1.0 or commit hash]
 
 **Additional context**
 Add any other context about the problem here.
+
+- Minimal `init.lua` or `init.vim` to reproduce the issue:
+
+```lua
+-- Your minimal config here
+```
