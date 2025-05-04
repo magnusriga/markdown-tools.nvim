@@ -274,7 +274,7 @@ Default keymaps are provided (see Configuration). Use them in Normal or Visual m
 
 The `:MarkdownNewTemplate` command (default keymap `<leader>mnt`) allows you to create new Markdown files based on templates stored in your configured `template_dir`.
 
-Placeholders in the template, including in any frontmatter, are replaced using the `frontmatter_*` functions in the config (more info below).
+> **_NOTE:_** Placeholders in the template, including in any frontmatter, are replaced using the `frontmatter_*` functions in the config (more info below).
 
 #### Frontmatter Handling
 
@@ -293,7 +293,7 @@ These generated values are then used in two ways:
    - `{{timestamp}}`: Timestamp used during generation (YYYYMMDDHHMM). Generated internally.
    - `{{key}}`: For each key in `frontmatter_custom`, the corresponding placeholder `{{key}}` is replaced by the value returned by its function. If the function returns a list, it's inserted in YAML list format (e.g., `["item1", "item2"]`).
 
-   If a generator function returns `nil`, the corresponding placeholder is replaced with an empty string. **Any other text within double curly braces (e.g., `{{unsupported}}`) that does not match a supported placeholder will be left unchanged in the template content.**
+   > **_NOTE:_** If a generator function returns `nil`, the corresponding placeholder is replaced with an empty string. **Any other text within double curly braces (e.g., `{{unsupported}}`) that does not match a supported placeholder will be left unchanged in the template content.**
 
 2. **Automatic Frontmatter Insertion:** After placeholder replacement, the plugin checks if the template content starts with `---`.
    - If it **does not** start with `---` AND the `insert_frontmatter` configuration option is `true` (the default), a new frontmatter block is automatically added to the beginning of the file. This block includes all fields (standard and custom) for which the generator function returned a non-nil value, formatted correctly in YAML. List values will be formatted like `tags: [tag1, tag2]`.
@@ -317,4 +317,4 @@ Distributed under the MIT License. See `LICENSE` file for more information.
 
 ## 🙏 Credits
 
-- The excellent [obsidian.nvim](https://github.com/epwalsh/obsidian.nvim), for inspiration on various features, including creating Markdown notes from templates.
+- [obsidian.nvim](https://github.com/epwalsh/obsidian.nvim): For inspiration on various features, including creating Markdown notes from templates.
