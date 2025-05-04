@@ -14,7 +14,7 @@ The markdown created, including the frontmatter, is compatible with [obsidian](h
 ## ✨ Features
 
 - **📝 Template Creation:** Create new Markdown files from predefined templates using your choice of picker (`fzf`, `telescope`, `snacks`). Automatically adds frontmatter with placeholders (e.g., `alias`, `tags`).
-- **🧱 Insert Markdown Elements:** Quickly add links, checkboxes, tables, headers, bold/italic/highlight text, code blocks (with language prompt), and more.
+- **🧱 Insert Markdown Elements:** Quickly add links, checkboxes, tables, headers, bold/italic/highlight text, code blocks, ++.
 - **🎨 Visual Mode Integration:** Wrap selected text with bold, italic, links, or highlights.
 - **✅ Checkbox Management:** Insert new checkboxes (`- [ ]`) and toggle their state (`- [x]`).
 - **➡️ List Continuation:** Automatically continue lists (bulleted, numbered, checkbox) when pressing Enter.
