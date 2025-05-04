@@ -238,7 +238,7 @@ Here are the type definitions for the configuration options:
 
 ## 🚀 Usage
 
-### Commands
+### 💻 Commands
 
 The following commands are available, most work in both visual and normal mode:
 
@@ -254,7 +254,7 @@ The following commands are available, most work in both visual and normal mode:
 - `:MarkdownToggleCheckbox`: Toggles the checkbox state (`[ ]` <=> `[x]`) on the current line.
 - `:MarkdownPreview`: Preview markdown. Saves the current file, then attempts to preview using: 1) the configured `preview_command`, 2) an auto-detected plugin (`markdown-preview.nvim`, `peek.nvim`, `glow.nvim`, `nvim-markdown-preview`), or 3) the system's default application as a fallback.
 
-### Keymaps
+### ⌨️ Keymaps
 
 Default keymaps are provided (see Configuration). Use them in Normal or Visual mode within Markdown files.
 
@@ -270,7 +270,7 @@ Default keymaps are provided (see Configuration). Use them in Normal or Visual m
 - `<leader>mp`: Preview (if configured).
 - `<leader>mnt`: Create new file from template.
 
-### Creating Markdown Files from Templates 📄
+### 📝 Creating Markdown Files from Templates
 
 The `:MarkdownNewTemplate` command (default keymap `<leader>mnt`) allows you to create new Markdown files based on templates stored in your configured `template_dir`.
 
@@ -302,7 +302,7 @@ These generated values are then used in two ways:
    - If it **does not** start with `---` AND the `insert_frontmatter` configuration option is `true` (the default), a new frontmatter block is automatically added to the beginning of the file. This block includes all fields (standard and custom) for which the generator function returned a non-nil value, formatted correctly in YAML. List values will be formatted like `tags: [tag1, tag2]`.
    - If it **does** start with `---`, or if `insert_frontmatter` is `false`, no new frontmatter block is inserted. The template's existing frontmatter (with placeholders already replaced) is kept as is.
 
-### List Continuation ↩️
+### ✅ List Continuation
 
 When `continue_lists_on_enter` is `true`, pressing `Enter` in a Markdown list item (bullet `*`, `-`, `+`; numbered `1.`; checkbox `- [ ]`, `- [x]`) will automatically insert the next list marker on the new line.
 
