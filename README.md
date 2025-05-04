@@ -1,9 +1,9 @@
-# markdown-tools.nvim
+# markdown-tools.nvim 🪄
 
 [![Lua](https://img.shields.io/badge/Lua-blue.svg?style=flat-square&logo=lua)](https://www.lua.org)
 [![License](https://img.shields.io/github/license/magnusriga/markdown-tools.nvim?style=flat-square)](LICENSE)
 
-> Enhancing your Markdown editing experience in Neovim with intuitive shortcuts and commands.
+> Enhancing your Markdown editing experience in Neovim with intuitive shortcuts and commands. ✍️
 
 `markdown-tools.nvim` provides a set of commands and configurable keymaps to streamline common Markdown editing tasks, from inserting elements like headers and code blocks to managing checkbox lists and creating files from templates.
 
@@ -13,13 +13,13 @@ The markdown created, including the frontmatter, is compatible with [obsidian](h
 
 ## ✨ Features
 
-- **Template Creation:** Create new Markdown files from predefined templates using your choice of picker (`fzf`, `telescope`, `snacks`). Automatically adds frontmatter with configurable placeholders (e.g., `alias`, `tags`).
-- **Insert Markdown Elements:** Quickly add links, checkboxes, tables, headers, bold/italic/highlight text, code blocks (with language prompt), and more.
-- **Visual Mode Integration:** Wrap selected text with bold, italic, links, or highlights.
-- **Checkbox Management:** Insert new checkboxes (`- [ ]`) and toggle their state (`- [x]`).
-- **List Continuation:** Automatically continue Markdown lists (bulleted, numbered, checkbox) when pressing Enter.
-- **Configurable:** Customize keymaps, enable/disable commands, set template directory, choose picker, and configure Markdown-specific buffer options.
-- **Preview:** Preview command, using other auto-detected nvim plugins (see below) or default system application.
+- **📝 Template Creation:** Create new Markdown files from predefined templates using your choice of picker (`fzf`, `telescope`, `snacks`). Automatically adds frontmatter with configurable placeholders (e.g., `alias`, `tags`).
+- **🧱 Insert Markdown Elements:** Quickly add links, checkboxes, tables, headers, bold/italic/highlight text, code blocks (with language prompt), and more.
+- **🎨 Visual Mode Integration:** Wrap selected text with bold, italic, links, or highlights.
+- **✅ Checkbox Management:** Insert new checkboxes (`- [ ]`) and toggle their state (`- [x]`).
+- **➡️ List Continuation:** Automatically continue Markdown lists (bulleted, numbered, checkbox) when pressing Enter.
+- **🔧 Configurable:** Customize keymaps, enable/disable commands, set template directory, choose picker, and configure Markdown-specific buffer options.
+- **👁️ Preview:** Preview command, using other auto-detected nvim plugins (see below) or default system application.
 
 ## ⚡️ Requirements
 
@@ -270,7 +270,7 @@ Default keymaps are provided (see Configuration). Use them in Normal or Visual m
 - `<leader>mp`: Preview (if configured).
 - `<leader>mnt`: Create new file from template.
 
-### Creating Markdown Files from Templates
+### Creating Markdown Files from Templates 📄
 
 The `:MarkdownNewTemplate` command (default keymap `<leader>mnt`) allows you to create new Markdown files based on templates stored in your configured `template_dir`.
 
@@ -302,19 +302,19 @@ These generated values are then used in two ways:
    - If it **does not** start with `---` AND the `insert_frontmatter` configuration option is `true` (the default), a new frontmatter block is automatically added to the beginning of the file. This block includes all fields (standard and custom) for which the generator function returned a non-nil value, formatted correctly in YAML. List values will be formatted like `tags: [tag1, tag2]`.
    - If it **does** start with `---`, or if `insert_frontmatter` is `false`, no new frontmatter block is inserted. The template's existing frontmatter (with placeholders already replaced) is kept as is.
 
-### List Continuation
+### List Continuation ↩️
 
 When `continue_lists_on_enter` is `true`, pressing `Enter` in a Markdown list item (bullet `*`, `-`, `+`; numbered `1.`; checkbox `- [ ]`, `- [x]`) will automatically insert the next list marker on the new line.
 
-## Status
+## 📈 Status
 
 Stable. Contributions and suggestions are welcome.
 
-## Contributing
+## 🤝 Contributing
 
 Please see CONTRIBUTING.md or open an issue/pull request.
 
-## License
+## 📜 License
 
 Distributed under the MIT License. See `LICENSE` file for more information.
 
