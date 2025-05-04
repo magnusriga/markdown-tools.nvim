@@ -13,11 +13,11 @@ The markdown created, including the frontmatter, is compatible with [obsidian](h
 
 ## ✨ Features
 
-- **📝 Template Creation:** Create new Markdown files from predefined templates using your choice of picker (`fzf`, `telescope`, `snacks`). Automatically adds frontmatter with placeholders (e.g., `alias`, `tags`).
+- **📝 Template Creation:** Create new Markdown files from predefined templates using your choice of picker (`snacks`, `fzf-lua`, `telescope`). Automatically adds frontmatter with placeholders (e.g., `alias`, `tags`).
 - **🧱 Insert Markdown Elements:** Quickly add links, checkboxes, tables, headers, bold/italic/highlight text, code blocks, ++.
 - **🎨 Visual Mode Integration:** Wrap selected text with bold, italic, links, or highlights.
-- **✅ Checkbox Management:** Insert new checkboxes (`- [ ]`) and toggle their state (`- [x]`).
-- **➡️ List Continuation:** Automatically continue lists (bulleted, numbered, checkbox) when pressing Enter.
+- **✅ Checkbox Management:** Insert new checkboxes and toggle their state.
+- **➡️ List Continuation:** Automatically continue lists (bullets, numbers, checkboxes) on Enter.
 - **🔧 Configurable:** Customize keymaps, enable/disable commands, set template directory, choose picker, configure buffer options, ++.
 - **👁️ Preview:** Preview command, using other auto-detected nvim plugins (see below) or default system application.
 
