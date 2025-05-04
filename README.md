@@ -274,7 +274,7 @@ Default keymaps are provided (see Configuration). Use them in Normal or Visual m
 
 The `:MarkdownNewTemplate` command (default keymap `<leader>mnt`) allows you to create new Markdown files based on templates stored in your configured `template_dir`.
 
-Placeholders in the template, including in any frontmatter, are replaced using the `frontmatter_*` functions below (see below).
+Placeholders in the template, including in any frontmatter, are replaced using the `frontmatter_*` functions in the config (more info below).
 
 #### Frontmatter Handling
 
