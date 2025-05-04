@@ -3,7 +3,7 @@
 [![Lua](https://img.shields.io/badge/Lua-blue.svg?style=flat-square&logo=lua)](https://www.lua.org)
 [![License](https://img.shields.io/github/license/magnusriga/markdown-tools.nvim?style=flat-square)](LICENSE)
 
-> Enhancing your Markdown editing experience in Neovim with intuitive shortcuts and commands. ✍️
+> Enhancing your Markdown editing experience in Neovim with intuitive shortcuts and commands.
 
 `markdown-tools.nvim` provides a set of commands and configurable keymaps to streamline common Markdown editing tasks, from inserting elements like headers and code blocks to managing checkbox lists and creating files from templates.
 
@@ -274,10 +274,7 @@ Default keymaps are provided (see Configuration). Use them in Normal or Visual m
 
 The `:MarkdownNewTemplate` command (default keymap `<leader>mnt`) allows you to create new Markdown files based on templates stored in your configured `template_dir`.
 
-1. Run the command.
-2. Select a template file using the configured picker (fzf, telescope, or snacks).
-3. Enter a name for the new file (the `.md` extension will be added automatically if omitted).
-4. The new file will be created in the same directory as the currently open file.
+Placeholders in the template, including in any frontmatter, are replaced using the `frontmatter_*` functions below (see below).
 
 #### Frontmatter Handling
 
