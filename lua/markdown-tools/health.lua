@@ -33,7 +33,6 @@ function M.check()
     "markdown-tools.lists",
     "markdown-tools.picker",
     "markdown-tools.preview",
-    "markdown-tools.table",
     "markdown-tools.template",
   }
   local all_core_ok = true
@@ -142,7 +141,9 @@ function M.check()
       elseif detected_plugin then
         ok("Using auto-detected preview plugin: " .. detected_plugin)
       else
-        warn("Preview command is enabled but no 'preview_command' is set and no supported preview plugin (glow.nvim, markdown-preview.nvim) was detected.")
+        warn(
+          "Preview command is enabled but no 'preview_command' is set and no supported preview plugin (glow.nvim, markdown-preview.nvim) was detected."
+        )
         info("Set 'preview_command' in your setup or install a supported preview plugin.")
       end
     end

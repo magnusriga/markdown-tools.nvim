@@ -1,7 +1,9 @@
-# markdown-tools.nvim  🪄
+# markdown-tools.nvim 🪄
 
 [![Lua](https://img.shields.io/badge/Lua-blue.svg?style=flat-square&logo=lua)](https://www.lua.org)
 [![License](https://img.shields.io/github/license/magnusriga/markdown-tools.nvim?style=flat-square)](LICENSE)
+[![Neovim >= 0.8.0](https://img.shields.io/badge/Neovim-%3E%3D%200.8.0-blueviolet.svg?style=flat-square)](https://neovim.io/)
+[![CI Status](https://img.shields.io/github/actions/workflow/status/magnusriga/markdown-tools.nvim/lint.yml?branch=main&style=flat-square)](https://github.com/magnusriga/markdown-tools.nvim/actions)
 
 > Enhancing your Markdown editing experience in Neovim with intuitive shortcuts and commands.
 
@@ -13,7 +15,7 @@ The markdown created, including the frontmatter, is compatible with [obsidian](h
 
 ## ✨ Features
 
-- **📝 Template Creation:** Create new Markdown files from predefined templates using your choice of picker (`snacks`, `fzf-lua`, `telescope`). Automatically adds frontmatter with placeholders (e.g., `alias`, `tags`).
+- **📝 Template Creation:** Create new Markdown files from predefined templates, using picker `snacks`, `fzf-lua`, or `telescope`. Automatically adds configurable frontmatter with placeholders (e.g., `alias`, `tags`).
 - **🧱 Insert Markdown Elements:** Quickly add links, checkboxes, tables, headers, bold/italic/highlight text, code blocks, ++.
 - **🎨 Visual Mode Integration:** Wrap selected text with bold, italic, links, or highlights.
 - **✅ Checkbox Management:** Insert new checkboxes and toggle their state.

@@ -1,0 +1,33 @@
+# .github/workflows/changelog.yml
+name: Check Changelog
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+    branches:
+      - main
+
+jobs:
+  check-changelog:
+    name: Verify CHANGELOG.md update
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetch all history to compare changes
+
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v44 # Use a dedicated action to get changed files
+        with:
+          files: CHANGELOG.md
+
+      - name: Check if CHANGELOG.md was modified
+        if: steps.changed-files.outputs.any_changed != 'true'
+        run: |
+          echo "Error: No changes detected in CHANGELOG.md."
+          echo "Please update the CHANGELOG.md file with details about your changes."
+          exit 1
