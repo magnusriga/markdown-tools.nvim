@@ -55,70 +55,70 @@ local M = {}
 
 ---@return MarkdownToolsConfig
 local function get_defaults()
-	return {
-		template_dir = vim.g.template_dir or vim.fn.expand("~/.config/nvim/templates"),
-		picker = "fzf",
-		alias = {},
-		tags = {},
-		insert_frontmatter = true, -- Add frontmatter by default
-		frontmatter_id = function(opts)
-			return opts.timestamp .. "_" .. opts.sanitized_name
-		end,
-		frontmatter_title = function(opts)
-			-- Default title is the filename without extension
-			return vim.fn.fnamemodify(opts.filename, ":t:r")
-		end,
-		frontmatter_alias = function(_opts) -- Default: empty list
-			return {}
-		end,
-		frontmatter_tags = function(_opts) -- Default: empty list
-			return {}
-		end,
-		frontmatter_date = function(_opts) -- Default: YYYY-MM-DD
-			return os.date("%Y-%m-%d")
-		end,
-		frontmatter_custom = {}, -- Default: no custom fields
-		keymaps = {
-			-- Default keymaps (empty means no default keymaps)
-			-- Users can configure these in their setup function
-			create_from_template = "<leader>mnt", -- New Template
-			insert_header = "<leader>mH", -- Header
-			insert_list_item = "",
-			insert_code_block = "<leader>mc", -- Code block
-			insert_bold = "<leader>mb", -- Bold
-			insert_highlight = "<leader>mh", -- Highlight
-			insert_italic = "<leader>mi", -- Italic
-			insert_link = "<leader>ml", -- Link
-			insert_table = "<leader>mt", -- Table
-			insert_checkbox = "<leader>mk", -- Checkbox
-			toggle_checkbox = "<leader>mx", -- Toggle Checkbox
-			preview = "<leader>mp", -- Preview
-		},
-		commands = {
-			create_from_template = true,
-			insert_header = true,
-			insert_code_block = true,
-			insert_bold = true,
-			insert_highlight = true,
-			insert_italic = true,
-			insert_link = true,
-			insert_table = true,
-			insert_checkbox = true,
-			toggle_checkbox = true,
-			preview = false, -- Disabled by default
-		},
-		preview_command = nil, -- Will use a default based on available plugins
+  return {
+    template_dir = vim.g.template_dir or vim.fn.expand("~/.config/nvim/templates"),
+    picker = "fzf",
+    alias = {},
+    tags = {},
+    insert_frontmatter = true, -- Add frontmatter by default
+    frontmatter_id = function(opts)
+      return opts.timestamp .. "_" .. opts.sanitized_name
+    end,
+    frontmatter_title = function(opts)
+      -- Default title is the filename without extension
+      return vim.fn.fnamemodify(opts.filename, ":t:r")
+    end,
+    frontmatter_alias = function(_opts) -- Default: empty list
+      return {}
+    end,
+    frontmatter_tags = function(_opts) -- Default: empty list
+      return {}
+    end,
+    frontmatter_date = function(_opts) -- Default: YYYY-MM-DD
+      return os.date("%Y-%m-%d")
+    end,
+    frontmatter_custom = {}, -- Default: no custom fields
+    keymaps = {
+      -- Default keymaps (empty means no default keymaps)
+      -- Users can configure these in their setup function
+      create_from_template = "<leader>mnt", -- New Template
+      insert_header = "<leader>mH", -- Header
+      insert_list_item = "",
+      insert_code_block = "<leader>mc", -- Code block
+      insert_bold = "<leader>mb", -- Bold
+      insert_highlight = "<leader>mh", -- Highlight
+      insert_italic = "<leader>mi", -- Italic
+      insert_link = "<leader>ml", -- Link
+      insert_table = "<leader>mt", -- Table
+      insert_checkbox = "<leader>mk", -- Checkbox
+      toggle_checkbox = "<leader>mx", -- Toggle Checkbox
+      preview = "<leader>mp", -- Preview
+    },
+    commands = {
+      create_from_template = true,
+      insert_header = true,
+      insert_code_block = true,
+      insert_bold = true,
+      insert_highlight = true,
+      insert_italic = true,
+      insert_link = true,
+      insert_table = true,
+      insert_checkbox = true,
+      toggle_checkbox = true,
+      preview = false, -- Disabled by default
+    },
+    preview_command = nil, -- Will use a default based on available plugins
 
-		-- Markdown file local options
-		enable_local_options = true,
-		wrap = true,
-		conceallevel = 2,
-		concealcursor = "nc",
-		spell = true,
-		spelllang = "en_us",
-		file_types = { "markdown" }, -- Default to markdown
-		continue_lists_on_enter = true, -- Added new option
-	}
+    -- Markdown file local options
+    enable_local_options = true,
+    wrap = true,
+    conceallevel = 2,
+    concealcursor = "nc",
+    spell = true,
+    spelllang = "en_us",
+    file_types = { "markdown" }, -- Default to markdown
+    continue_lists_on_enter = true, -- Added new option
+  }
 end
 
 -- Initialize options with defaults
@@ -129,17 +129,17 @@ M.options = get_defaults()
 ---@param opts? MarkdownToolsConfig User configuration options.
 ---@return boolean success Whether setup was successful
 function M.setup(opts)
-	-- Merge user options into the existing defaults
-	M.options = vim.tbl_deep_extend("force", M.options, opts or {})
+  -- Merge user options into the existing defaults
+  M.options = vim.tbl_deep_extend("force", M.options, opts or {})
 
-	-- Validate essential config
-	if not M.options.template_dir or M.options.template_dir == "" then
-		vim.notify("markdown-tools: template_dir is not configured.", vim.log.levels.ERROR)
-		-- Optionally set a default fallback here if desired, but erroring is safer
-		-- M.options.template_dir = vim.fn.expand("~/.config/nvim/templates")
-		return false -- Indicate setup failure
-	end
-	return true -- Indicate setup success
+  -- Validate essential config
+  if not M.options.template_dir or M.options.template_dir == "" then
+    vim.notify("markdown-tools: template_dir is not configured.", vim.log.levels.ERROR)
+    -- Optionally set a default fallback here if desired, but erroring is safer
+    -- M.options.template_dir = vim.fn.expand("~/.config/nvim/templates")
+    return false -- Indicate setup failure
+  end
+  return true -- Indicate setup success
 end
 
 return M

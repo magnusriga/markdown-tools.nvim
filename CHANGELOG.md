@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added comprehensive test suite using `plenary.nvim`.
+- Added `stylua` for code formatting and linting.
 
 ### Changed
 
