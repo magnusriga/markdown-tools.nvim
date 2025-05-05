@@ -311,9 +311,66 @@ When `continue_lists_on_enter` is `true`, pressing `Enter` in a Markdown list it
 
 Stable. Contributions and suggestions are welcome.
 
+## 🛠️ Development
+
+Contributions are welcome! Please follow the guidelines below for setting up your development environment and submitting changes.
+
+### Setup
+
+1.  **Fork and Clone:** Fork the repository on GitHub and clone your fork locally.
+2.  **Dependencies:**
+    - **Neovim:** >= 0.8.0
+    - **Plenary.nvim:** Required for testing. Included as a submodule or managed by your plugin manager during development.
+    - **Node.js & npm:** Required for commit linting (`commitlint`, `husky`) and release automation (`semantic-release`). Install via your system package manager or [nvm](https://github.com/nvm-sh/nvm).
+3.  **Install Node Modules:** Run `npm install` in the project root to install development dependencies listed in `package.json`, including `husky` for Git hooks.
+
+### Testing
+
+- Run the test suite using the provided script:
+  ```bash
+  make test
+  # or directly:
+  # ./scripts/test
+  ```
+- Ensure all tests pass before submitting a pull request. Add new tests for new features or bug fixes.
+
+### Linting and Formatting
+
+- This project uses `stylua` for Lua code formatting.
+- Check formatting:
+  ```bash
+  make lint
+  # or directly:
+  # stylua --check .
+  ```
+- Apply formatting:
+  ```bash
+  make format
+  # or directly:
+  # stylua .
+  ```
+
+### Commit Conventions
+
+- This project follows the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification.
+- Commit messages must adhere to this format (e.g., `feat: ...`, `fix: ...`, `chore: ...`).
+- The `commit-msg` Git hook (managed by `husky`) will automatically check your commit messages using `commitlint`.
+
+### Branching and Pull Requests
+
+- Create feature branches from the `main` branch.
+- Direct commits to `main` are blocked by a `pre-commit` Git hook.
+- Submit Pull Requests to the `main` branch of the upstream repository.
+
+### Release Process
+
+- Releases are fully automated using `semantic-release` running in GitHub Actions.
+- When commits following the Conventional Commits specification are merged into `main`, `semantic-release` automatically determines the next version, updates the `CHANGELOG.md`, creates a Git tag, and publishes a GitHub Release.
+- Manual tagging or changelog updates are not required.
+
 ## 🤝 Contributing
 
-Please see CONTRIBUTING.md or open an issue/pull request.
+Please see [CONTRIBUTING.md](CONTRIBUTING.md) for more details on reporting bugs, suggesting features, and the pull request process.
 
 ## 📜 License
 
