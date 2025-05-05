@@ -34,6 +34,7 @@ jobs:
         run: npx semantic-release
         env:
           HUSKY: 0 # Disable Husky hooks during release
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Provided by GitHub Actions
+          # Use a PAT with repo scope to bypass branch protection
+          GITHUB_TOKEN: ${{ secrets.SEMANTIC_RELEASE_TOKEN }}
           # If you were publishing to npm, you would add NPM_TOKEN here
           # NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
