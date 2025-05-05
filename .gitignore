@@ -1,6 +1,21 @@
 # Lua
 *.luac
 
+# Node dependencies
+node_modules/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Build output
+dist
+build
+
 # OS generated files
 .DS_Store
 .DS_Store?
