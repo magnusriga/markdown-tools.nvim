@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added comprehensive test suite using `plenary.nvim`.
+
+### Changed
+
+- Updated `MarkdownCodeBlock` command to correctly handle visual selections, including multi-line selections and selections starting mid-line.
+
 ## [1.0.1] - 2025-05-05
 
 ### Added

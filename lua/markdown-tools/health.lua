@@ -33,7 +33,6 @@ function M.check()
     "markdown-tools.lists",
     "markdown-tools.picker",
     "markdown-tools.preview",
-    "markdown-tools.table",
     "markdown-tools.template",
   }
   local all_core_ok = true

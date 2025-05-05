@@ -10,7 +10,7 @@ function M.continue_list_on_enter()
 	local bufnr = vim.api.nvim_get_current_buf()
 	local winid = vim.api.nvim_get_current_win()
 	local line = vim.api.nvim_get_current_line()
-	local cursor_row, _ = unpack(vim.api.nvim_win_get_cursor(winid)) -- 1-based row
+	local cursor_row, _ = table.unpack(vim.api.nvim_win_get_cursor(winid)) -- 1-based row
 
 	-- Try to match different list types
 	local indent, marker, content

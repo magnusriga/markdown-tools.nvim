@@ -1,0 +1,27 @@
+#!/bin/bash
+# scripts/test
+
+set -e # Exit immediately if a command exits with a non-zero status.
+
+# Define paths
+PLUGIN_DIR=$(pwd)
+PLENARY_DIR="${PLUGIN_DIR}/plenary.nvim" # Clone plenary locally
+TEST_DIR="${PLUGIN_DIR}/tests"
+MINIMAL_INIT="${TEST_DIR}/minimal_init.lua"
+
+# Clone plenary.nvim if it doesn't exist
+if [ ! -d "${PLENARY_DIR}" ]; then
+  echo "Cloning plenary.nvim..."
+  git clone --depth 1 https://github.com/nvim-lua/plenary.nvim.git "${PLENARY_DIR}"
+else
+  echo "plenary.nvim already exists."
+fi
+
+# Run tests using Neovim, plenary.nvim, and busted
+echo "Running tests..."
+nvim --headless \
+     --noplugin \
+     -u "${MINIMAL_INIT}" \
+     -c "PlenaryBustedDirectory ${TEST_DIR} { minimal_init = '${MINIMAL_INIT}' }"
+
+echo "Tests finished."

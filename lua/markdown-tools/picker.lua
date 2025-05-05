@@ -6,7 +6,7 @@ local M = {}
 --- Tries to match the selected item (which might have icons) to an actual file.
 ---@param selected table List containing the selected item string from the picker.
 ---@param template_dir string Directory where templates are stored.
----@param opts Config Plugin configuration options.
+---@param opts MarkdownToolsConfig Plugin configuration options.
 local function process_selected_picker_item(selected, template_dir, opts)
 	if not selected or #selected == 0 then
 		vim.notify("No template selected.", vim.log.levels.WARN)
@@ -57,8 +57,8 @@ end
 
 --- Select template using fzf-lua
 ---@param template_dir string Directory for templates
----@param callback fun(selected: table, template_dir: string, opts: Config) Callback function
----@param opts Config Plugin configuration options.
+---@param callback fun(selected: table, template_dir: string, opts: MarkdownToolsConfig) Callback function
+---@param opts MarkdownToolsConfig Plugin configuration options.
 local function select_with_fzf(template_dir, callback, opts)
 	local ok, fzf_lua = pcall(require, "fzf-lua")
 	if not ok then
@@ -78,8 +78,8 @@ end
 
 --- Select template using telescope
 ---@param template_dir string Directory for templates
----@param callback fun(selected: table, template_dir: string, opts: Config) Callback function
----@param opts Config Plugin configuration options.
+---@param callback fun(selected: table, template_dir: string, opts: MarkdownToolsConfig) Callback function
+---@param opts MarkdownToolsConfig Plugin configuration options.
 local function select_with_telescope(template_dir, callback, opts)
 	local ok, telescope = pcall(require, "telescope.builtin")
 	if not ok then
@@ -105,8 +105,8 @@ end
 
 --- Select template using snacks
 ---@param template_dir string Directory for templates
----@param callback fun(selected: table, template_dir: string, opts: Config) Callback function
----@param opts Config Plugin configuration options.
+---@param callback fun(selected: table, template_dir: string, opts: MarkdownToolsConfig) Callback function
+---@param opts MarkdownToolsConfig Plugin configuration options.
 local function select_with_snacks(template_dir, callback, opts)
 	local ok, Snacks = pcall(require, "snacks")
 	if not ok then
@@ -127,7 +127,7 @@ local function select_with_snacks(template_dir, callback, opts)
 end
 
 --- Dispatches template selection to the configured picker.
----@param opts Config Plugin configuration options.
+---@param opts MarkdownToolsConfig Plugin configuration options.
 function M.select_template(opts)
 	local picker_type = opts.picker
 	local template_dir = opts.template_dir

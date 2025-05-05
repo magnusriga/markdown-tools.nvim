@@ -57,8 +57,9 @@ function M.setup(opts)
 		commands.insert_header(args)
 	end, { nargs = "*", desc = "Insert Markdown header.", range = true }) -- Add range = true
 	register_command("MarkdownCodeBlock", function(args)
-		commands.insert_code_block(args.fargs)
-	end, { nargs = "*", desc = "Insert Markdown code block." })
+		-- Pass the whole args table, which includes range info
+		commands.insert_code_block(args)
+	end, { nargs = "*", desc = "Insert Markdown code block.", range = true }) -- Added range = true
 	register_command("MarkdownBold", function(args)
 		commands.insert_bold(args)
 	end, { nargs = "*", desc = "Insert bold text.", range = true })
