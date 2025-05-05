@@ -21,6 +21,10 @@ jobs:
         with:
           # Fetch all history and tags for semantic-release to analyze
           fetch-depth: 0
+          # The SEMANTIC_RELEASE_TOKEN is a Personal Access Token (PAT) with repo scope.
+          # It is used for authentication during the release process. Ensure it is configured
+          # in the repository secrets under the name SEMANTIC_RELEASE_TOKEN.
+          token: ${{ secrets.SEMANTIC_RELEASE_TOKEN }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
