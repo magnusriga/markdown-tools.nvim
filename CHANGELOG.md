@@ -1,3 +1,13 @@
+## [1.3.1](https://github.com/magnusriga/markdown-tools.nvim/compare/v1.3.0...v1.3.1) (2025-05-05)
+
+### Bug Fixes
+
+* added husky exception for semantic release ([#9](https://github.com/magnusriga/markdown-tools.nvim/issues/9)) ([1283f50](https://github.com/magnusriga/markdown-tools.nvim/commit/1283f5052db5fd9efe54b93a35590c7f6628a550))
+* ci update ([#8](https://github.com/magnusriga/markdown-tools.nvim/issues/8)) ([2784f73](https://github.com/magnusriga/markdown-tools.nvim/commit/2784f73d7d8345e35ff807df7c6ce926602eebcb))
+* ci updates ([#6](https://github.com/magnusriga/markdown-tools.nvim/issues/6)) ([9d51610](https://github.com/magnusriga/markdown-tools.nvim/commit/9d516104e785b865ba42dc29c30470a13333ada2))
+* semantic-release ([#11](https://github.com/magnusriga/markdown-tools.nvim/issues/11)) ([84b4360](https://github.com/magnusriga/markdown-tools.nvim/commit/84b436001ba2bcebc153b3391c584049411192b1))
+* semantic-release ([#12](https://github.com/magnusriga/markdown-tools.nvim/issues/12)) ([ce84dc4](https://github.com/magnusriga/markdown-tools.nvim/commit/ce84dc49f559c396ea277bcafa8dc9a771cf7563))
+
 <!-- markdownlint-disable MD024 -->
 
 # Changelog
