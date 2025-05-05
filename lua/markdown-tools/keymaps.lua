@@ -11,7 +11,6 @@ local function setup_keymap(mode, key, cmd, desc, opts)
 	if key and key ~= "" then
 		opts = opts or {}
 		opts.desc = desc
-		opts.buffer = true
 		vim.keymap.set(mode, key, cmd, opts)
 	end
 end
@@ -21,22 +20,26 @@ end
 ---@param commands_enabled table Command enable configuration
 ---@param file_types string[] List of file types to apply keymaps to
 function M.setup_keymaps(keymaps, commands_enabled, file_types)
-	-- Create a dedicated augroup for keymaps
-	local augroup = vim.api.nvim_create_augroup("MarkdownShortcutsKeymaps", { clear = true })
+	-- Register the global keymap for create_from_template first
+	if commands_enabled.create_from_template then
+		setup_keymap(
+			"n", -- Mode
+			keymaps.create_from_template, -- Key
+			"<cmd>MarkdownNewTemplate<CR>", -- Command
+			"Create from template", -- Description
+			{} -- Global keymap, no buffer option needed
+		)
+	end
+
+	-- Create a dedicated augroup for buffer-local keymaps
+	local augroup = vim.api.nvim_create_augroup("MarkdownShortcutsBufferKeymaps", { clear = true })
 
 	vim.api.nvim_create_autocmd("FileType", {
 		group = augroup,
 		pattern = file_types, -- Use the configured file types
 		callback = function()
-			-- Define keymap configurations
+			-- Define keymap configurations (excluding create_from_template)
 			local keymap_configs = {
-				{
-					command_key = "create_from_template",
-					mode = "n",
-					key = keymaps.create_from_template,
-					cmd = "<cmd>MarkdownNewTemplate<CR>",
-					desc = "Create from template",
-				},
 				{
 					command_key = "insert_header",
 					mode = { "n", "v" },
@@ -177,7 +180,7 @@ function M.setup_keymaps(keymaps, commands_enabled, file_types)
 					command_key = "insert_checkbox",
 					mode = "v", -- Visual mode only
 					key = keymaps.insert_checkbox,
-						-- Call the Lua function directly, which handles line insertion
+					-- Call the Lua function directly, which handles line insertion
 					cmd = function()
 						-- Exit visual mode before calling the command
 						vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Esc>', true, false, true), 'n', false)
@@ -202,11 +205,12 @@ function M.setup_keymaps(keymaps, commands_enabled, file_types)
 				},
 			}
 
-			-- Apply all keymap configurations
+			-- Apply all buffer-local keymap configurations
 			for _, config in ipairs(keymap_configs) do
 				-- Only set keymap if the command is enabled
 				if commands_enabled[config.command_key] then
 					-- Combine base opts with config-specific opts
+					-- Add buffer = true for these buffer-local keymaps
 					local base_opts = { desc = config.desc, buffer = true }
 					local final_opts = vim.tbl_extend("force", base_opts, config.opts or {})
 
@@ -215,7 +219,7 @@ function M.setup_keymaps(keymaps, commands_enabled, file_types)
 				end
 			end
 
-			-- Add keymap for continuing lists on Enter if enabled
+			-- Add keymap for continuing lists on Enter if enabled (buffer-local)
 			if require("markdown-tools.config").options.continue_lists_on_enter then
 				vim.keymap.set("i", "<CR>", function()
 					local line = vim.api.nvim_get_current_line()
