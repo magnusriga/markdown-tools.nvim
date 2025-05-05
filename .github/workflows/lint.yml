@@ -18,6 +18,7 @@ jobs:
         uses: JohnnyMorganz/stylua-action@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          version: latest # Specify the stylua version
           # args: --check . # stylua action runs check by default
 
       - name: Run lint check via Makefile
