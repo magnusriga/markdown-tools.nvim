@@ -1,0 +1,17 @@
+echo "Running lint-staged on staged files..."
+npx lint-staged || { echo "lint-staged failed. Aborting commit." >&2; exit 1; }
+
+# --- Branch Check ---
+# Get current branch name
+branch_name=$(git symbolic-ref --short HEAD)
+
+# Check if branch is main
+if [ "$branch_name" = "main" ]; then
+  echo "Error: Direct commits to the 'main' branch are not allowed." >&2
+  echo "Please use a feature branch and create a Pull Request." >&2
+  exit 1
+fi
+# --- End Branch Check ---
+
+echo "Pre-commit checks passed."
+exit 0

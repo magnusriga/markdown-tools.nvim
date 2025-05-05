@@ -1,0 +1,39 @@
+# --- Branch Check ---
+# Get current branch name
+# Note: In pre-push, we need to check the remote ref being pushed to.
+# This example checks if *any* push targets the main branch.
+# Adjust if you have a more complex branching strategy.
+protected_branch="main"
+current_branch=$(git symbolic-ref HEAD | sed 's!refs/heads/!!')
+push_command=$(ps -ocommand= -p $PPID)
+remote_ref=$(echo "$push_command" | grep -oE 'refs/heads/[^ ]+' | sed 's!refs/heads/!!')
+
+# Check if pushing to the protected branch
+# This logic might need refinement depending on how you push (e.g., pushing multiple branches)
+# A simpler check could be just checking the current local branch if you only push the current one.
+# Let's use the simpler check for now, assuming push of current branch:
+if [ "$current_branch" = "$protected_branch" ]; then
+  echo "Error: Direct pushes to the '$protected_branch' branch are not allowed." >&2
+  echo "Please use a feature branch and create a Pull Request." >&2
+  exit 1
+fi
+# --- End Branch Check ---
+
+echo "Running pre-push checks (lint, test)..."
+
+# Run lint check
+echo "Running lint check..."
+if ! make lint; then
+  echo "Lint check failed. Aborting push." >&2
+  exit 1
+fi
+
+# Run tests
+echo "Running tests..."
+if ! make test; then
+  echo "Tests failed. Aborting push." >&2
+  exit 1
+fi
+
+echo "Pre-push checks passed."
+exit 0
