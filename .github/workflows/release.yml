@@ -1,0 +1,38 @@
+# .github/workflows/release.yml
+name: Release
+
+on:
+  push:
+    branches:
+      - main # Or your primary branch name
+
+permissions:
+  contents: write # Needed to commit changelog, create tags and releases
+  issues: write # Needed to comment on issues/PRs mentioned in commits
+  pull-requests: write # Needed to comment on issues/PRs mentioned in commits
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          # Fetch all history and tags for semantic-release to analyze
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*" # Use the latest LTS version of Node.js
+
+      - name: Install dependencies
+        run: npm ci # Use 'ci' for faster, deterministic installs in CI
+
+      - name: Run semantic-release
+        run: npx semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Provided by GitHub Actions
+          # If you were publishing to npm, you would add NPM_TOKEN here
+          # NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

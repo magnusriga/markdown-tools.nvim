@@ -1,0 +1,36 @@
+{
+  "name": "markdown-tools.nvim",
+  "version": "1.0.0",
+  "description": "[![Lua](https://img.shields.io/badge/Lua-blue.svg?style=flat-square&logo=lua)](https://www.lua.org) [![License](https://img.shields.io/github/license/magnusriga/markdown-tools.nvim?style=flat-square)](LICENSE) [![Neovim >= 0.8.0](https://img.shields.io/badge/Neovim-%3E%3D%200.8.0-blueviolet.svg?style=flat-square)](https://neovim.io/) [![CI Status](https://img.shields.io/github/actions/workflow/status/magnusriga/markdown-tools.nvim/lint.yml?branch=main&style=flat-square)](https://github.com/magnusriga/markdown-tools.nvim/actions)",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "prepare": "husky install",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/magnusriga/markdown-tools.nvim.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/magnusriga/markdown-tools.nvim/issues"
+  },
+  "homepage": "https://github.com/magnusriga/markdown-tools.nvim#readme",
+  "devDependencies": {
+    "@commitlint/cli": "^19.8.0",
+    "@commitlint/config-conventional": "^19.8.0",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/commit-analyzer": "^13.0.1",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^11.0.2",
+    "@semantic-release/release-notes-generator": "^14.0.3",
+    "conventional-changelog-conventionalcommits": "^8.0.0",
+    "husky": "^9.1.7",
+    "semantic-release": "^24.2.3"
+  }
+}
