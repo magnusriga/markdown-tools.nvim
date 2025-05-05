@@ -13,23 +13,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Allow `MarkdownNewTemplate` command to be used in any filetype.
+
 ### Deprecated
 
 ### Removed
 
 ### Fixed
 
+- Visual mode keymap for inserting headers now correctly exits visual mode before executing the command.
+
 ### Security
 
 ## [1.0.0] - 2025-05-05
 
 ### Added
+
 - Added default keybinding `<leader>mH` for inserting headers.
 - Added ability to use generator functions for frontmatter and placeholders in templates.
 - Added health checks (`:checkhealth markdown-tools`).
 - Initial release of `markdown-tools.nvim`.
 
 ### Changed
+
 - Updated health checks (`:checkhealth markdown-tools`).
 
 ### Deprecated
