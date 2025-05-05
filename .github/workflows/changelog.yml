@@ -15,13 +15,13 @@ jobs:
     name: Verify CHANGELOG.md update
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0 # Fetch all history to compare changes
 
       - name: Get changed files
         id: changed-files
-        uses: tj-actions/changed-files # Use a dedicated action to get changed files
+        uses: tj-actions/changed-files@v46.0.5 # Use a dedicated action to get changed files
         with:
           files: CHANGELOG.md
 
