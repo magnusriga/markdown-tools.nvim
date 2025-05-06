@@ -221,13 +221,16 @@ function M.setup_keymaps(keymaps, commands_enabled, file_types)
             and (line:match(pattern_bullet) or line:match(pattern_numbered) or line:match(pattern_checkbox))
 
           if is_list_end then
-            -- If it is, call the list continuation function directly
-            require("markdown-tools.lists").continue_list_on_enter()
+            -- If it is, schedule the list continuation function to run soon
+            vim.schedule(function()
+              require("markdown-tools.lists").continue_list_on_enter()
+            end)
+            return "" -- Handled: tell Neovim to do nothing further for this <CR>
           else
-            -- Otherwise, insert a literal newline
-            vim.api.nvim_input("<CR>")
+            -- Otherwise, let Neovim handle <CR> as default
+            return vim.api.nvim_replace_termcodes("<CR>", true, true, true)
           end
-        end, { buffer = true, desc = "Continue Markdown List" })
+        end, { buffer = true, desc = "Continue Markdown List", expr = true })
       end
     end,
   })

@@ -38,7 +38,7 @@ function M.continue_list_on_enter()
   -- if it's a list line and cursor is at the end. So, marker_type should exist.
   if not marker_type then
     -- Fallback just in case: insert a normal newline
-    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<CR>", true, false, true), "n", false)
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<CR>", true, false, true), "i", false)
     return
   end
 
