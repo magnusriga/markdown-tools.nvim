@@ -1,6 +1,32 @@
 ---@mod markdown-tools.lists List handling utilities
 local M = {}
 
+function M.keymap_init()
+  local line = vim.api.nvim_get_current_line()
+  local _, cursor_col = unpack(vim.api.nvim_win_get_cursor(0))
+
+  -- Define separate patterns for each list type
+  local pattern_bullet = "^%s*[-*+]%s+"
+  local pattern_numbered = "^%s*%d+%.%s+"
+  local pattern_checkbox = "^%s*[-*+] %[[ x]%]%s+"
+
+  -- Check if cursor is at end and any pattern matched
+  local is_list_end = cursor_col == #line
+    and (line:match(pattern_bullet) or line:match(pattern_numbered) or line:match(pattern_checkbox))
+
+  if is_list_end then
+    -- If it is, schedule the list continuation function to run soon
+    vim.schedule(function()
+      require("markdown-tools.lists").continue_list_on_enter()
+    end)
+    return "" -- Handled: tell Neovim to do nothing further for this <CR>
+  else
+    -- Otherwise, let Neovim handle <CR> as default
+    -- return vim.api.nvim_replace_termcodes("<CR>", true, true, true)
+    return vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<CR>", true, true, true), "nt", false)
+  end
+end
+
 --- Handles the <CR> key press in insert mode for markdown files.
 -- Continues lists (bullet, numbered, checkbox) automatically.
 -- If the current list item is empty, hitting Enter removes the list marker and inserts a blank line.
