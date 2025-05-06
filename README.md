@@ -4,7 +4,6 @@
 [![License](https://img.shields.io/github/license/magnusriga/markdown-tools.nvim?style=flat-square)](LICENSE)
 [![Neovim >= 0.8.0](https://img.shields.io/badge/Neovim-%3E%3D%200.8.0-blueviolet.svg?style=flat-square)](https://neovim.io/)
 [![CI Status](https://img.shields.io/github/actions/workflow/status/magnusriga/markdown-tools.nvim/ci.yml?branch=main&style=flat-square)](https://github.com/magnusriga/markdown-tools.nvim/actions/workflows/ci.yml)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](CONTRIBUTING.md)
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/magnusriga/markdown-tools.nvim?style=flat-square)](https://github.com/magnusriga/markdown-tools.nvim/releases/latest)
 
 > Enhancing your Markdown editing experience in Neovim with intuitive shortcuts and commands.
