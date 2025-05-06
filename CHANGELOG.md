@@ -1,3 +1,9 @@
+## [1.4.3](https://github.com/magnusriga/markdown-tools.nvim/compare/v1.4.2...v1.4.3) (2025-05-06)
+
+### Bug Fixes
+
+* to get new release by semantic-version ([#19](https://github.com/magnusriga/markdown-tools.nvim/issues/19)) ([aeebee6](https://github.com/magnusriga/markdown-tools.nvim/commit/aeebee6dd1644b5c2f3b016049e9707cf1f8f24d))
+
 ## [1.4.2](https://github.com/magnusriga/markdown-tools.nvim/compare/v1.4.1...v1.4.2) (2025-05-06)
 
 ### Bug Fixes
