@@ -384,4 +384,4 @@ Distributed under the MIT License. See `LICENSE` file for more information.
 
 ## 🙏 Credits
 
-- [obsidian.nvim](https://github.com/epwalsh/obsidian.nvim): For inspiration on various features, including creating Markdown notes from templates.
+- [obsidian.nvim](https://github.com/epwalsh/obsidian.nvim): For inspiration to various features, including creating Markdown notes from templates.
