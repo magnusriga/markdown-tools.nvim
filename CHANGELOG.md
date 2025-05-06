@@ -1,3 +1,9 @@
+## [1.4.1](https://github.com/magnusriga/markdown-tools.nvim/compare/v1.4.0...v1.4.1) (2025-05-06)
+
+### Bug Fixes
+
+* delete node_modules ([#15](https://github.com/magnusriga/markdown-tools.nvim/issues/15)) ([e376249](https://github.com/magnusriga/markdown-tools.nvim/commit/e376249304eee8ee6ac97ccde113e229161bbb0d))
+
 ## [1.4.0](https://github.com/magnusriga/markdown-tools.nvim/compare/v1.3.1...v1.4.0) (2025-05-06)
 
 ### Features
