@@ -1,3 +1,9 @@
+## [1.4.0](https://github.com/magnusriga/markdown-tools.nvim/compare/v1.3.1...v1.4.0) (2025-05-06)
+
+### Features
+
+* added list continuation tests ([#13](https://github.com/magnusriga/markdown-tools.nvim/issues/13)) ([c50953c](https://github.com/magnusriga/markdown-tools.nvim/commit/c50953c3871921db0ac225ca4a07021168e5358e))
+
 ## [1.3.1](https://github.com/magnusriga/markdown-tools.nvim/compare/v1.3.0...v1.3.1) (2025-05-05)
 
 ### Bug Fixes
