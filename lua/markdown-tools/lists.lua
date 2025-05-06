@@ -44,12 +44,10 @@ function M.continue_list_on_enter()
 
   -- If the list item content is empty or only whitespace
   if content:match("^%s*$") then
-    -- Remove the marker from the current line, leaving only the indent
-    vim.api.nvim_buf_set_lines(bufnr, cursor_row - 1, cursor_row, false, { indent })
-    -- Insert a new blank line below
-    vim.api.nvim_buf_set_lines(bufnr, cursor_row, cursor_row, false, { "" })
-    -- Move cursor to the beginning of the new line
-    vim.api.nvim_win_set_cursor(winid, { cursor_row + 1, #indent }) -- Move to end of indent
+    -- Replace the current line (marker + indent) with an empty line
+    vim.api.nvim_buf_set_lines(bufnr, cursor_row - 1, cursor_row, false, { "" })
+    -- Move cursor to the beginning of the (now empty) current line
+    vim.api.nvim_win_set_cursor(winid, { cursor_row, 0 }) -- Set cursor (1-based row, 0-based byte col)
   else
     -- Calculate the next marker
     local next_marker = marker
@@ -69,10 +67,11 @@ function M.continue_list_on_enter()
     -- For bullet lists, next_marker is already correct (same as current marker)
 
     -- Insert the new list item line below the current one
-    local new_line_content = indent .. next_marker
-    vim.api.nvim_buf_set_lines(bufnr, cursor_row, cursor_row, false, { new_line_content })
-    -- Move cursor to the end of the new list item
-    vim.api.nvim_win_set_cursor(winid, { cursor_row + 1, #new_line_content })
+    local new_line = indent .. next_marker
+    vim.api.nvim_buf_set_lines(bufnr, cursor_row, cursor_row, false, { new_line })
+    -- Move cursor to the end of the new marker
+    -- Use the byte length of the inserted line content as the 0-based column index
+    vim.api.nvim_win_set_cursor(winid, { cursor_row + 1, #new_line }) -- Set cursor (1-based row, 0-based byte col)
   end
 end
 

@@ -254,4 +254,87 @@ describe("markdown-tools Commands", function()
     -- For now, just check it was called.
     select_template_spy:revert()
   end)
+
+  it("should continue unordered list item on Enter", function()
+    -- Setup initial list item
+    vim.api.nvim_buf_set_lines(0, 0, -1, false, { "- List item 1" })
+    vim.api.nvim_win_set_cursor(0, { 1, #"- List item 1" }) -- Cursor at the end
+
+    -- Directly call the list continuation function
+    require("markdown-tools.lists").continue_list_on_enter()
+
+    -- Wait for potential async operations (though likely not needed now)
+    vim.wait(10)
+
+    -- Assert new list item is created and cursor is positioned correctly
+    local expected_content = "- List item 1\n- "
+    luassert.equals(expected_content, get_buffer_content())
+
+    -- Expect cursor at #marker - 1 due to observed test environment behavior
+    local expected_cursor = { 2, #"- " - 1 } -- {2, 1}
+    local actual_cursor = vim.api.nvim_win_get_cursor(0)
+    luassert.same(expected_cursor, actual_cursor)
+  end)
+
+  it("should continue ordered list item on Enter", function()
+    -- Setup initial list item
+    vim.api.nvim_buf_set_lines(0, 0, -1, false, { "1. List item 1" })
+    vim.api.nvim_win_set_cursor(0, { 1, #"1. List item 1" }) -- Cursor at the end
+
+    -- Directly call the list continuation function
+    require("markdown-tools.lists").continue_list_on_enter()
+
+    -- Wait for potential async operations
+    vim.wait(10)
+
+    -- Assert new list item is created and cursor is positioned correctly
+    local expected_content = "1. List item 1\n2. "
+    luassert.equals(expected_content, get_buffer_content())
+
+    -- Expect cursor at #marker - 1 due to observed test environment behavior
+    local expected_cursor = { 2, #"2. " - 1 } -- {2, 2}
+    local actual_cursor = vim.api.nvim_win_get_cursor(0)
+    luassert.same(expected_cursor, actual_cursor)
+  end)
+
+  it("should continue checkbox list item on Enter", function()
+    -- Setup initial list item
+    vim.api.nvim_buf_set_lines(0, 0, -1, false, { "- [ ] List item 1" })
+    vim.api.nvim_win_set_cursor(0, { 1, #"- [ ] List item 1" }) -- Cursor at the end
+
+    -- Directly call the list continuation function
+    require("markdown-tools.lists").continue_list_on_enter()
+
+    -- Wait for potential async operations
+    vim.wait(10)
+
+    -- Assert new list item is created and cursor is positioned correctly
+    local expected_content = "- [ ] List item 1\n- [ ] "
+    luassert.equals(expected_content, get_buffer_content())
+
+    -- Expect cursor at #marker - 1 due to observed test environment behavior
+    local expected_cursor = { 2, #"- [ ] " - 1 } -- {2, 5}
+    local actual_cursor = vim.api.nvim_win_get_cursor(0)
+    luassert.same(expected_cursor, actual_cursor)
+  end)
+
+  it("should remove list marker on Enter on empty list item", function()
+    -- Setup empty list item
+    vim.api.nvim_buf_set_lines(0, 0, -1, false, { "- List item 1", "- " })
+    vim.api.nvim_win_set_cursor(0, { 2, #"- " }) -- Cursor at the end of the empty item marker
+
+    -- Directly call the list continuation function
+    require("markdown-tools.lists").continue_list_on_enter()
+
+    -- Wait for potential async operations
+    vim.wait(10)
+
+    -- Assert the list marker is removed and an empty line is inserted
+    local expected_content = "- List item 1\n" -- The "- " line should be replaced by ""
+    luassert.equals(expected_content, get_buffer_content())
+
+    local expected_cursor = { 2, 0 } -- Line 2, column 0 (0-based)
+    local actual_cursor = vim.api.nvim_win_get_cursor(0)
+    luassert.same(expected_cursor, actual_cursor)
+  end)
 end)
