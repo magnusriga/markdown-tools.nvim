@@ -1,3 +1,9 @@
+## [1.4.2](https://github.com/magnusriga/markdown-tools.nvim/compare/v1.4.1...v1.4.2) (2025-05-06)
+
+### Bug Fixes
+
+* enter was broken on non-bullet lines, now fixed ([#16](https://github.com/magnusriga/markdown-tools.nvim/issues/16)) ([fa12cbe](https://github.com/magnusriga/markdown-tools.nvim/commit/fa12cbe59bf49cd0c0040c46f6621db08a09dca0))
+
 ## [1.4.1](https://github.com/magnusriga/markdown-tools.nvim/compare/v1.4.0...v1.4.1) (2025-05-06)
 
 ### Bug Fixes
