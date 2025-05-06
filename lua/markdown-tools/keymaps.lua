@@ -224,8 +224,8 @@ function M.setup_keymaps(keymaps, commands_enabled, file_types)
             -- If it is, call the list continuation function directly
             require("markdown-tools.lists").continue_list_on_enter()
           else
-            -- Otherwise, feed a normal <CR> keypress
-            vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<CR>", true, false, true), "n", false)
+            -- Otherwise, insert a literal newline
+            vim.api.nvim_input("<CR>")
           end
         end, { buffer = true, desc = "Continue Markdown List" })
       end
