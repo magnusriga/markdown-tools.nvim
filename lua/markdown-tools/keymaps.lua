@@ -61,8 +61,6 @@ function M.setup_keymaps(keymaps, commands_enabled, file_types)
           mode = "v", -- Visual mode only
           key = keymaps.insert_code_block,
           cmd = function()
-            -- Still need Lua for prompt, exit visual first
-            vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", false)
             require("markdown-tools.commands").insert_code_block({ range = 2 })
           end,
           desc = "Code block (Visual)",
@@ -155,25 +153,14 @@ function M.setup_keymaps(keymaps, commands_enabled, file_types)
         },
         {
           command_key = "insert_checkbox",
-          mode = "n", -- Normal mode only
+          mode = { "n", "v" },
           key = keymaps.insert_checkbox,
           cmd = function()
-            require("markdown-tools.commands").insert_checkbox()
-          end,
-          desc = "Checkbox (Normal)",
-        },
-        {
-          command_key = "insert_checkbox",
-          mode = "v", -- Visual mode only
-          key = keymaps.insert_checkbox,
-          -- Call the Lua function directly, which handles line insertion
-          cmd = function()
-            -- Exit visual mode before calling the command
+            -- Esc first, in case in visual mode.
             vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", false)
             require("markdown-tools.commands").insert_checkbox()
           end,
-          desc = "Checkbox", -- Updated description
-          opts = nil, -- Remove remap = true, no longer needed
+          desc = "Checkbox",
         },
         {
           command_key = "toggle_checkbox", -- Renamed key
@@ -207,30 +194,12 @@ function M.setup_keymaps(keymaps, commands_enabled, file_types)
 
       -- Add keymap for continuing lists on Enter if enabled (buffer-local)
       if require("markdown-tools.config").options.continue_lists_on_enter then
-        vim.keymap.set("i", "<CR>", function()
-          local line = vim.api.nvim_get_current_line()
-          local _, cursor_col = unpack(vim.api.nvim_win_get_cursor(0))
-
-          -- Define separate patterns for each list type
-          local pattern_bullet = "^%s*[-*+]%s+"
-          local pattern_numbered = "^%s*%d+%.%s+"
-          local pattern_checkbox = "^%s*[-*+] %[[ x]%]%s+"
-
-          -- Check if cursor is at end and any pattern matched
-          local is_list_end = cursor_col == #line
-            and (line:match(pattern_bullet) or line:match(pattern_numbered) or line:match(pattern_checkbox))
-
-          if is_list_end then
-            -- If it is, schedule the list continuation function to run soon
-            vim.schedule(function()
-              require("markdown-tools.lists").continue_list_on_enter()
-            end)
-            return "" -- Handled: tell Neovim to do nothing further for this <CR>
-          else
-            -- Otherwise, let Neovim handle <CR> as default
-            return vim.api.nvim_replace_termcodes("<CR>", true, true, true)
-          end
-        end, { buffer = true, desc = "Continue Markdown List", expr = true })
+        vim.keymap.set(
+          "i",
+          "<CR>",
+          require("markdown-tools.lists").keymap_init,
+          { buffer = true, desc = "Continue Markdown List", expr = true }
+        )
       end
     end,
   })

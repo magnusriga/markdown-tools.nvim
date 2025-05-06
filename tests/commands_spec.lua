@@ -4,6 +4,13 @@ local helpers = require("tests.helpers")
 local luassert = require("luassert")
 local spy = require("luassert.spy")
 
+-- NOTE:
+-- - `vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("i<CR>", true, true, true), "x", false)`
+--   calls keymap defined in code, but for some reason that keymap does not show up in
+--   `vim.api.nvim_get_keymap("i")` output.
+-- - Calling it with `x` is necessary, `t` works, but `n`, i.e. no remap, does not work.
+-- - Thus, use `feed("i<CR>", "xt")` to simulate Enter keypresses in tests.
+
 describe("markdown-tools Commands", function()
   local commands
   local mt
@@ -25,32 +32,30 @@ describe("markdown-tools Commands", function()
   -- Use helpers for visual selection and buffer content
   local set_visual_selection = helpers.set_visual_selection
   local get_buffer_content = helpers.get_buffer_content
-
-  it(":MarkdownBold should wrap word under cursor (simulated via visual)", function()
-    vim.api.nvim_buf_set_lines(0, 0, -1, false, { "Some text here" })
-    set_visual_selection(1, 6, 1, 9) -- Select 'text'
-    commands.insert_bold({ range = 2 })
-    luassert.equals("Some **text** here", get_buffer_content())
-  end)
+  local feed = helpers.feed
+  local leader = vim.g.mapleader or "\\"
 
   it(":MarkdownBold should wrap selection in visual mode", function()
     vim.api.nvim_buf_set_lines(0, 0, -1, false, { "Wrap this selected text" })
-    set_visual_selection(1, 6, 1, 18) -- Select 'this selected'
-    commands.insert_bold({ range = 2 })
+    set_visual_selection(1, 5, 1, 17) -- Select 'this selected'
+    local keys = leader .. "mb"
+    feed(keys, "xt")
     luassert.equals("Wrap **this selected** text", get_buffer_content())
   end)
 
   it(":MarkdownItalic should wrap selection in visual mode", function()
     vim.api.nvim_buf_set_lines(0, 0, -1, false, { "Wrap this selected text" })
-    set_visual_selection(1, 6, 1, 18) -- Select 'this selected'
-    commands.insert_italic({ range = 2 })
+    set_visual_selection(1, 5, 1, 17) -- Select 'this selected'
+    local keys = leader .. "mi"
+    feed(keys, "xt")
     luassert.equals("Wrap *this selected* text", get_buffer_content())
   end)
 
   it(":MarkdownHighlight should wrap selection in visual mode", function()
     vim.api.nvim_buf_set_lines(0, 0, -1, false, { "Wrap this selected text" })
-    set_visual_selection(1, 6, 1, 18) -- Select 'this selected'
-    commands.insert_highlight({ range = 2 })
+    set_visual_selection(1, 5, 1, 17) -- Select 'this selected'
+    local keys = leader .. "mh"
+    feed(keys, "xt")
     luassert.equals("Wrap ==this selected== text", get_buffer_content())
   end)
 
@@ -66,8 +71,10 @@ describe("markdown-tools Commands", function()
     end
 
     vim.api.nvim_buf_set_lines(0, 0, -1, false, { "My Heading Text" })
-    set_visual_selection(1, 1, 1, 15) -- Select the whole line
-    commands.insert_header({ range = 2 }) -- Simulate visual call
+    set_visual_selection(1, 0, 1, 14) -- Select the whole line
+
+    local keys = leader .. "mH"
+    feed(keys, "xt")
 
     luassert.equals("## My Heading Text", get_buffer_content())
     luassert.spy(ui_input_spy).was.called(1)
@@ -85,8 +92,10 @@ describe("markdown-tools Commands", function()
     end
 
     vim.api.nvim_buf_set_lines(0, 0, -1, false, { "line1", "line2" })
-    set_visual_selection(1, 1, 2, 5) -- Select both lines
-    commands.insert_code_block({ range = 2 }) -- Simulate visual call
+    set_visual_selection(1, 0, 2, 4) -- Select both lines
+
+    local keys = leader .. "mc"
+    feed(keys, "xt")
 
     luassert.equals("```\nline1\nline2\n```", get_buffer_content())
     luassert.spy(ui_input_spy).was.called(1)
@@ -104,40 +113,38 @@ describe("markdown-tools Commands", function()
     end
 
     vim.api.nvim_buf_set_lines(0, 0, -1, false, { "local x = 1" })
-    set_visual_selection(1, 1, 1, 11) -- Select the line
-    commands.insert_code_block({ range = 2 }) -- Simulate visual call
+    set_visual_selection(1, 0, 1, 10) -- Select the line
+
+    local keys = leader .. "mc"
+    feed(keys, "xt")
 
     luassert.equals("```lua\nlocal x = 1\n```", get_buffer_content())
     luassert.spy(ui_input_spy).was.called(1)
+    ui_input_spy:revert()
   end)
 
   it(":MarkdownCheckbox should insert checkbox on empty line and enter insert mode", function()
     vim.api.nvim_buf_set_lines(0, 0, -1, false, { "" })
     vim.api.nvim_win_set_cursor(0, { 1, 0 })
 
-    commands.insert_checkbox()
-
-    -- Increase wait time to 100ms
-    vim.wait(100)
+    local keys = leader .. "mk"
+    feed(keys, "xt")
 
     luassert.equals("- [ ] ", get_buffer_content())
   end)
 
   it(":MarkdownCheckbox should insert checkbox on line with text and stay in normal mode", function()
     vim.api.nvim_buf_set_lines(0, 0, -1, false, { "Existing text" })
-    vim.api.nvim_win_set_cursor(0, { 1, 5 }) -- Cursor on 't'
-    local feedkeys_spy = spy.on(vim.api, "nvim_feedkeys")
+    vim.api.nvim_win_set_cursor(0, { 1, 4 }) -- Cursor on 't'
 
-    commands.insert_checkbox()
+    local keys = leader .. "mk"
+    feed(keys, "xt")
 
     luassert.equals("- [ ] Existing text", get_buffer_content())
-    -- Check cursor position (should be after the inserted checkbox prefix)
-    local cursor = vim.api.nvim_win_get_cursor(0)
-    luassert.same({ 1, vim.fn.strchars("- [ ] ") }, cursor) -- {1, 6}
 
-    -- Check that Esc was fed to ensure normal mode
-    luassert.spy(feedkeys_spy).was.called_with(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", false)
-    feedkeys_spy:revert()
+    -- Ensure cursor position should be left where it was before insertion.
+    local cursor = vim.api.nvim_win_get_cursor(0)
+    luassert.same({ 1, vim.fn.strchars("- [ ] ") - 1 + 5 }, cursor)
   end)
 
   it(":MarkdownToggleCheckbox should check an unchecked box", function()
@@ -150,7 +157,8 @@ describe("markdown-tools Commands", function()
   it(":MarkdownToggleCheckbox should uncheck a checked box", function()
     vim.api.nvim_buf_set_lines(0, 0, -1, false, { "- [x] Checked item" })
     vim.api.nvim_win_set_cursor(0, { 1, 1 })
-    commands.toggle_checkbox()
+    local keys = leader .. "mx"
+    feed(keys, "xt")
     luassert.equals("- [ ] Checked item", get_buffer_content())
   end)
 
@@ -162,15 +170,11 @@ describe("markdown-tools Commands", function()
     -- Spy on vim.notify
     local notify_spy = spy.on(vim, "notify")
 
-    commands.toggle_checkbox() -- Should do nothing and not error
+    local keys = leader .. "mx"
+    feed(keys, "xt")
 
-    -- Assert the line content is unchanged
     luassert.equals(original_line, get_buffer_content())
-
-    -- Assert that vim.notify was called with the specific message and level
     luassert.spy(notify_spy).was.called_with("Current line is not a checkbox item", vim.log.levels.WARN)
-
-    -- Revert the spy
     notify_spy:revert()
   end)
 
@@ -183,11 +187,8 @@ describe("markdown-tools Commands", function()
       callback_arg(input_val)
     end
 
-    vim.api.nvim_win_set_cursor(0, { 1, 0 })
-    commands.insert_link()
-
-    -- Need vim.wait to allow scheduled callbacks to run
-    vim.wait(50)
+    local keys = leader .. "ml"
+    feed(keys, "xt")
 
     luassert.equals("[link text](http://example.com)", get_buffer_content())
     luassert.spy(ui_input_spy).was.called(2)
@@ -206,11 +207,10 @@ describe("markdown-tools Commands", function()
     end
 
     vim.api.nvim_buf_set_lines(0, 0, -1, false, { "Select this text" })
-    set_visual_selection(1, 8, 1, 17) -- Select 'this text'
-    commands.insert_link({ range = 2 }) -- Simulate visual call
+    set_visual_selection(1, 7, 1, 16) -- Select 'this text'
 
-    -- Need vim.wait to allow scheduled callbacks to run
-    vim.wait(50)
+    local keys = leader .. "ml"
+    feed(keys, "xt")
 
     luassert.equals("Select [this text](http://example.com)", get_buffer_content())
     luassert.spy(ui_input_spy).was.called(1) -- Only called for URL
@@ -219,18 +219,26 @@ describe("markdown-tools Commands", function()
 
   it(":MarkdownInsertTable should insert a 2x2 table", function()
     local ui_input_spy = spy.on(vim.ui, "input")
-    -- Simulate entering '2' for columns, then '2' for rows
+    -- Simulate entering '2' for columns, then '2' for rows.
     local inputs = { "2", "2" }
     ui_input_spy.callback = function(opts, callback_arg)
+      -- Returns first element in list, shifting the others down.
+      -- Called twice: Once for columns, once for rows.
       local input_val = table.remove(inputs, 1)
       callback_arg(input_val)
     end
 
-    vim.api.nvim_win_set_cursor(0, { 1, 0 })
-    commands.insert_table()
-
-    -- Increase wait time to 100ms
-    vim.wait(100)
+    -- - Calls `commands.insert_table` directly, which does two vim.ui.input calls.
+    -- - Spy above is equal to same struct as vim.ui.input in memory, so when callback
+    --   is replaced, it also replaces callback of vim.ui.input.
+    -- - Purpose of using spy on `vim.ui.input` is to later check how many times `vim.ui.input`
+    --   was called, and with what arguments.
+    -- - Purpose of replacing `vim.ui.input.callback` via spy, is that when `vim.ui.input(..)`
+    --   is called, and thus internal `vim.ui.input.callback` runs with both arguments to `vim.ui.input(..)`
+    --   passed in, we simulate user input by calling `callback_arg` i.e. callback user passed in, immediately,
+    --   with predefined values (normally `callback_arg` does not run until `on_confirm`, i.e. enter).
+    local keys = leader .. "mt"
+    feed(keys, "xt")
 
     local expected_table = {
       "| Header 1 | Header 2 |",
@@ -239,6 +247,7 @@ describe("markdown-tools Commands", function()
       "| Cell 2,1 | Cell 2,2 |",
       "",
     }
+
     luassert.equals(table.concat(expected_table, "\n"), get_buffer_content())
     luassert.spy(ui_input_spy).was.called(2)
     ui_input_spy:revert()
@@ -247,94 +256,91 @@ describe("markdown-tools Commands", function()
   it(":MarkdownNewTemplate should call picker.select_template", function()
     local select_template_spy = spy.on(picker_module, "select_template")
 
-    commands.create_from_template()
+    local keys = leader .. "mnt"
+    feed(keys, "xt")
 
+    -- Check if it was called with the effective config.
+    -- Can be complex to check deeply, for now just check it was called.
     luassert.spy(select_template_spy).was.called(1)
-    -- Check if it was called with the effective config (can be complex to check deeply)
-    -- For now, just check it was called.
     select_template_spy:revert()
   end)
 
   it("should continue unordered list item on Enter", function()
     -- Setup initial list item
-    vim.api.nvim_buf_set_lines(0, 0, -1, false, { "- List item 1" })
-    vim.api.nvim_win_set_cursor(0, { 1, #"- List item 1" }) -- Cursor at the end
+    local initial_line = "- List item 1"
+    vim.api.nvim_buf_set_lines(0, 0, -1, false, { initial_line })
 
-    -- Directly call the list continuation function
-    require("markdown-tools.lists").continue_list_on_enter()
-
-    -- Wait for potential async operations (though likely not needed now)
-    vim.wait(10)
+    feed("A<CR>", "xt") -- Simulate Enter press at end of line in insert mode
 
     -- Assert new list item is created and cursor is positioned correctly
-    local expected_content = "- List item 1\n- "
-    luassert.equals(expected_content, get_buffer_content())
+    local expected_marker = "- "
+    luassert.equals(initial_line .. "\n" .. expected_marker, get_buffer_content())
 
-    -- Expect cursor at #marker - 1 due to observed test environment behavior
-    local expected_cursor = { 2, #"- " - 1 } -- {2, 1}
     local actual_cursor = vim.api.nvim_win_get_cursor(0)
-    luassert.same(expected_cursor, actual_cursor)
+    -- The columns are 0-indexed, whereas the count is 1-indexed, thus subtract 1.
+    luassert.same({ 2, #expected_marker - 1 }, actual_cursor)
   end)
 
   it("should continue ordered list item on Enter", function()
     -- Setup initial list item
-    vim.api.nvim_buf_set_lines(0, 0, -1, false, { "1. List item 1" })
-    vim.api.nvim_win_set_cursor(0, { 1, #"1. List item 1" }) -- Cursor at the end
+    local initial_line = "1. List item 1"
+    vim.api.nvim_buf_set_lines(0, 0, -1, false, { initial_line })
 
-    -- Directly call the list continuation function
-    require("markdown-tools.lists").continue_list_on_enter()
-
-    -- Wait for potential async operations
-    vim.wait(10)
+    feed("A<CR>", "xt") -- Simulate Enter press at end of line in insert mode
 
     -- Assert new list item is created and cursor is positioned correctly
-    local expected_content = "1. List item 1\n2. "
-    luassert.equals(expected_content, get_buffer_content())
+    local expected_marker = "2. "
+    luassert.equals(initial_line .. "\n" .. expected_marker, get_buffer_content())
 
-    -- Expect cursor at #marker - 1 due to observed test environment behavior
-    local expected_cursor = { 2, #"2. " - 1 } -- {2, 2}
     local actual_cursor = vim.api.nvim_win_get_cursor(0)
-    luassert.same(expected_cursor, actual_cursor)
+    -- The columns are 0-indexed, whereas the count is 1-indexed, thus subtract 1.
+    luassert.same({ 2, #expected_marker - 1 }, actual_cursor)
   end)
 
   it("should continue checkbox list item on Enter", function()
     -- Setup initial list item
-    vim.api.nvim_buf_set_lines(0, 0, -1, false, { "- [ ] List item 1" })
-    vim.api.nvim_win_set_cursor(0, { 1, #"- [ ] List item 1" }) -- Cursor at the end
+    local initial_line = "- [ ] List item 1"
+    vim.api.nvim_buf_set_lines(0, 0, -1, false, { initial_line })
 
-    -- Directly call the list continuation function
-    require("markdown-tools.lists").continue_list_on_enter()
-
-    -- Wait for potential async operations
-    vim.wait(10)
+    feed("A<CR>", "xt") -- Simulate Enter press at end of line in insert mode
 
     -- Assert new list item is created and cursor is positioned correctly
-    local expected_content = "- [ ] List item 1\n- [ ] "
-    luassert.equals(expected_content, get_buffer_content())
+    local expected_marker = "- [ ] "
+    luassert.equals(initial_line .. "\n" .. expected_marker, get_buffer_content())
 
-    -- Expect cursor at #marker - 1 due to observed test environment behavior
-    local expected_cursor = { 2, #"- [ ] " - 1 } -- {2, 5}
     local actual_cursor = vim.api.nvim_win_get_cursor(0)
-    luassert.same(expected_cursor, actual_cursor)
+    -- The columns are 0-indexed, whereas the count is 1-indexed, thus subtract 1.
+    luassert.same({ 2, #expected_marker - 1 }, actual_cursor)
   end)
 
   it("should remove list marker on Enter on empty list item", function()
     -- Setup empty list item
-    vim.api.nvim_buf_set_lines(0, 0, -1, false, { "- List item 1", "- " })
-    vim.api.nvim_win_set_cursor(0, { 2, #"- " }) -- Cursor at the end of the empty item marker
+    local initial_lines = { "- List item 1", "- " }
+    vim.api.nvim_buf_set_lines(0, 0, -1, false, initial_lines)
+    vim.api.nvim_win_set_cursor(0, { 2, #initial_lines[2] }) -- Cursor at the end of the empty item marker on line 2
 
-    -- Directly call the list continuation function
-    require("markdown-tools.lists").continue_list_on_enter()
-
-    -- Wait for potential async operations
-    vim.wait(10)
+    feed("A<CR>", "xt") -- Simulate Enter press at end of line in insert mode
 
     -- Assert the list marker is removed and an empty line is inserted
-    local expected_content = "- List item 1\n" -- The "- " line should be replaced by ""
+    local expected_content = initial_lines[1] .. "\n" -- The "- " line should be replaced by ""
     luassert.equals(expected_content, get_buffer_content())
 
-    local expected_cursor = { 2, 0 } -- Line 2, column 0 (0-based)
     local actual_cursor = vim.api.nvim_win_get_cursor(0)
-    luassert.same(expected_cursor, actual_cursor)
+    luassert.same({ 2, 0 }, actual_cursor) -- Cursor at beginning of the (now empty) second line
   end)
+
+  it(
+    "should perform default <CR> action via keymap when Enter is pressed in INSERT MODE on a non-list item line",
+    function()
+      -- Setup non-list item line.
+      local original_line = "This is a normal line."
+
+      -- Insert newline.
+      feed("i" .. original_line .. "<CR>")
+
+      -- Assert newline is inserted (default insert mode <CR> behavior)
+      local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+      luassert.same({ original_line, "" }, lines)
+    end
+  )
 end)

@@ -269,11 +269,6 @@ function M.insert_code_block(opts)
           new_text_lines
         )
       end
-
-      -- Exit visual mode only if actually in visual mode
-      if mode:match("^[vV]") then
-        vim.cmd("normal! <Esc>")
-      end
     else
       -- Normal mode insertion
       vim.api.nvim_put({ opening, "", closing }, "l", true, true)
@@ -511,19 +506,19 @@ function M.insert_checkbox()
   local trimmed_line = current_line_content:match("^%s*(.-)%s*$") or ""
 
   local checkbox = "- [ ] "
-  local checkbox_len_chars = vim.fn.strchars(checkbox)
 
   if trimmed_line == "" then
     -- Line is empty or only whitespace, replace it and stay in insert mode
     vim.api.nvim_buf_set_lines(0, cursor_row - 1, cursor_row, false, { checkbox })
-    -- Use feedkeys 'a' to enter insert mode at the end of the line
-    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("a", true, false, true), "n", false)
+    -- Use feedkeys 'A' to enter insert mode at the end of the line
+    vim.api.nvim_feedkeys("A", "n", true)
   else
+    local cursor_position = vim.api.nvim_win_get_cursor(0)
     -- Line has content, insert checkbox at the beginning and return to normal mode
     local new_line = checkbox .. current_line_content
     vim.api.nvim_buf_set_lines(0, cursor_row - 1, cursor_row, false, { new_line })
     -- Set cursor position using 0-based index
-    vim.api.nvim_win_set_cursor(0, { cursor_row, checkbox_len_chars }) -- Move cursor after checkbox
+    vim.api.nvim_win_set_cursor(0, { cursor_position[1], cursor_position[2] + vim.fn.strchars(checkbox) })
     -- Ensure Normal mode by sending Esc
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", false)
   end
